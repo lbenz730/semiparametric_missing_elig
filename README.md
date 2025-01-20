@@ -19,7 +19,7 @@ Folder of scripts used to clean and process EHR data for use in data application
 * __rygb_vsg_data_prep.R__: Prep analysis dataset(s) for data application of the aligned time zero case (RYGB vs. VSG).
 * __surgical_px_cleaning.R__ Clean some chart review for surgical procedure types
 
-### Analysis (`analysis/aligned_t0`)
+## Analysis (`analysis/aligned_t0`)
 Folder of scripts used for data application analysis
 
 * __elig_figures.R__: Plot eligibility distributions __(Generates Figure 3)__
@@ -29,6 +29,10 @@ Folder of scripts used for data application analysis
 * __fit_EIF_estimator.R__: EIF ATT analysis (with $\hat\theta_\text{EIF}$) for diabetes remission outcome
 * __plot_results.R__: Plot point estimates and 95% confidence intervals __(Generates Figure 4)__
 * __diabetes_figure.R__: Plot of diabetes figure showing frequency of certain measurements for select surgical patients __(Generates Figure 1)__
+
+## Data (`data/`)
+* Simulation inputs + results
+* Data application results 
 
 ## Figures (`figures/`)
 Figures saved out from various analyses
