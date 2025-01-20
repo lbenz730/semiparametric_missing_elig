@@ -1,5 +1,9 @@
 # Robust Causal Inference for Point Exposures with Missing Eligibility Criteria
 
+
+Benz, L., Levis, A.W., Mukherjee, R., Wang, R., Arterburn, D., Fischer, H., Lee, C., Shortreed, S.M., and Hauense, S. "Robust Causal Inference for Point Exposures with Missing Eligibility Criteria." _Under Review_ (Pre-Print)[Link Later]
+
+
 ## R Scripts (`scripts/`)
 * __helpers.R__: File of helper functions 
 
