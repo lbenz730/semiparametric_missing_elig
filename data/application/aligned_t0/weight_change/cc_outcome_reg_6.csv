@@ -1,0 +1,2 @@
+scenario_id,bmi_lookback,diabetes_lookback,rx_lookback,att_rygb,sd_rygb,att_sleeve,sd_sleeve,estimator
+6,1,6,12,-0.06939256521563594,0.0038523665921704835,-0.069068354666114,0.003767456436296326,Complete Case Outcome Regression

@@ -1,0 +1,17 @@
+elig_criteria,true_att,missing_data,estimator,outcome_model,att_hat
+bmi_only,-0.16568387899315185,---,Mean of (Y - mu0 | A = 1),Confounders + L^R,-0.16615483045181217
+bmi_only,-0.16568387899315185,---,Mean of (Y - mu0 | A = 1),Confounders Only,-0.16586712230096654
+bmi_only,-0.16568387899315185,Missing Elig.,Mean of (Y - mu0 | A = 1),Confounders + L^R,-0.16791709188275522
+bmi_only,-0.16568387899315185,Missing Elig.,Mean of (Y - mu0 | A = 1),Confounders Only,-0.17416417959809605
+bmi_only,-0.16568387899315185,Missing Elig.,Mean of [(Y - mu0 | A = 1) x IPW],Confounders + L^R,-0.16791709188275522
+bmi_only,-0.16568387899315185,Missing Elig.,Mean of [(Y - mu0 | A = 1) x IPW],Confounders Only,-0.17416417959809605
+bmi_only,-0.16568387899315185,Missing Elig.,IPW Weighted Mean of (Y - mu0 | A = 1),Confounders + L^R,-0.16791709188275522
+bmi_only,-0.16568387899315185,Missing Elig.,IPW Weighted Mean of (Y - mu0 | A = 1),Confounders Only,-0.17416417959809605
+pre_diabetes,-0.16675190297296522,---,Mean of (Y - mu0 | A = 1),Confounders + L^R,-0.16615483045181217
+pre_diabetes,-0.16675190297296522,---,Mean of (Y - mu0 | A = 1),Confounders Only,-0.16586712230096654
+pre_diabetes,-0.16675190297296522,Missing Elig.,Mean of (Y - mu0 | A = 1),Confounders + L^R,-0.19557638793508697
+pre_diabetes,-0.16675190297296522,Missing Elig.,Mean of (Y - mu0 | A = 1),Confounders Only,-0.19530980201964632
+pre_diabetes,-0.16675190297296522,Missing Elig.,Mean of [(Y - mu0 | A = 1) x IPW],Confounders + L^R,-0.5197820143220566
+pre_diabetes,-0.16675190297296522,Missing Elig.,Mean of [(Y - mu0 | A = 1) x IPW],Confounders Only,-0.5392353710705193
+pre_diabetes,-0.16675190297296522,Missing Elig.,IPW Weighted Mean of (Y - mu0 | A = 1),Confounders + L^R,-0.1679859827579715
+pre_diabetes,-0.16675190297296522,Missing Elig.,IPW Weighted Mean of (Y - mu0 | A = 1),Confounders Only,-0.17415539217582218

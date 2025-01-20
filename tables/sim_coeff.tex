@@ -1,0 +1,129 @@
+\begin{table}
+\tiny
+\centering
+\begin{tabular}{|>{}Sc|Sc|Sc|Sc>{}Sc|}
+\hline
+\multicolumn{3}{|Sc|}{\textbf{Model Information}} & \multicolumn{2}{Sc}{ } \\
+\cline{1-3}
+\textbf{Component Model} & \textbf{Coefficient} & \textbf{Covariate} & \textbf{Simulation 1} & \textbf{Simulation 2|}\\
+\hline
+ &  & \texttt{(Intercept)} & 0.96 & -1.30\\
+\cline{3-5}
+ &  & \texttt{site[NC]} & -0.64 & -0.39\\
+\cline{3-5}
+ &  & \texttt{site[SC]} & -0.96 & -0.60\\
+\cline{3-5}
+ &  & \texttt{gender} & $2.7 \times 10^{-2}$ & $2.7 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{race} & 0.35 & 0.35\\
+\cline{3-5}
+ &  & \texttt{baseline\_bmi} & $1.6 \times 10^{-2}$ & $1.6 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[former]} & -0.29 & -0.29\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[never]} & -0.23 & -0.23\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[no\_self\_report]} & -0.32 & -0.32\\
+\cline{3-5}
+ &  & \texttt{baseline\_age} & $3 \times 10^{-3}$ & $3 \times 10^{-3}$\\
+\cline{3-5}
+\multirow{-11}{*}{\centering\arraybackslash Treatment} & \multirow{-11}{*}{\centering\arraybackslash $\bm \beta_\pi$} & \texttt{eGFR} & $-5 \times 10^{-3}$ & $-5 \times 10^{-3}$\\
+\cline{1-5}
+ &  & \texttt{(Intercept)} & 0.38 & 0.38\\
+\cline{3-5}
+ &  & \texttt{site[NC]} & -0.38 & -0.38\\
+\cline{3-5}
+ &  & \texttt{site[SC]} & 0.79 & 0.79\\
+\cline{3-5}
+ &  & \texttt{gender} & -0.15 & -0.15\\
+\cline{3-5}
+ &  & \texttt{race} & 0.10 & 0.10\\
+\cline{3-5}
+ &  & \texttt{baseline\_bmi} & $-2 \times 10^{-2}$ & $-2 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[former]} & 0.44 & 0.44\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[never]} & 0.32 & 0.32\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[no\_self\_report]} & -2.58 & -2.58\\
+\cline{3-5}
+ &  & \texttt{baseline\_age} & $1.1 \times 10^{-2}$ & $1.1 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{eGFR} & $-1 \times 10^{-4}$ & $-1 \times 10^{-4}$\\
+\cline{3-5}
+\multirow{-12}{*}{\centering\arraybackslash Missingness} & \multirow{-12}{*}{\centering\arraybackslash $\bm \beta_\eta$} & \texttt{bs\_type} & 0.50 & 0.50\\
+\cline{1-5}
+ &  & \texttt{(Intercept)} & 1.06 & 1.06\\
+\cline{3-5}
+ &  & \texttt{site[NC]} & 0.23 & 0.23\\
+\cline{3-5}
+ &  & \texttt{site[SC]} & -0.24 & -0.24\\
+\cline{3-5}
+ &  & \texttt{gender} & -0.10 & -0.10\\
+\cline{3-5}
+ &  & \texttt{race} & $-6.9 \times 10^{-2}$ & $-6.9 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{baseline\_bmi} & $-7.5 \times 10^{-3}$ & $-7.5 \times 10^{-3}$\\
+\cline{3-5}
+ &  & \texttt{I(baseline\_bmi\^2)} & $1 \times 10^{-4}$ & $1 \times 10^{-4}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[former]} & $-5.7 \times 10^{-2}$ & $-5.7 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[never]} & $-7.6 \times 10^{-2}$ & $-7.6 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[no\_self\_report]} & $-9.4 \times 10^{-2}$ & $-9.4 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{baseline\_age} & $9.2 \times 10^{-3}$ & $9.2 \times 10^{-3}$\\
+\cline{3-5}
+ &  & \texttt{eGFR} & $7 \times 10^{-4}$ & $7 \times 10^{-4}$\\
+\cline{3-5}
+\multirow{-13}{*}{\centering\arraybackslash Eligibility Defining Covariate} & \multirow{-13}{*}{\centering\arraybackslash $\bm \beta_\lambda$} & \texttt{bs\_type} & 0.10 & 0.10\\
+\cline{1-5}
+Eligibiliity Defining Covariate & $\alpha_\lambda$ & \texttt{---} & 4.83 & 4.83\\
+\cline{1-5}
+ &  & \texttt{(Intercept)} & -0.24 & $1 \times 10^{-1}$\\
+\cline{3-5}
+ &  & \texttt{bs\_type} & $3.3 \times 10^{-2}$ & $3.3 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{site[NC]} & 0.18 & 0.18\\
+\cline{3-5}
+ &  & \texttt{site[SC]} & 0.14 & 0.14\\
+\cline{3-5}
+ &  & \texttt{gender} & -0.14 & -0.14\\
+\cline{3-5}
+ &  & \texttt{race} & $-1.5 \times 10^{-2}$ & $-1.5 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{baseline\_bmi} & $-3.8 \times 10^{-3}$ & $-3.8 \times 10^{-3}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[former]} & $3.8 \times 10^{-2}$ & $3.8 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[never]} & $4.9 \times 10^{-2}$ & $4.9 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[no\_self\_report]} & -0.15 & -0.15\\
+\cline{3-5}
+ &  & \texttt{baseline\_age} & $9.7 \times 10^{-4}$ & $9.7 \times 10^{-4}$\\
+\cline{3-5}
+ &  & \texttt{eGFR} & $1.4 \times 10^{-4}$ & $1.4 \times 10^{-4}$\\
+\cline{3-5}
+ &  & \texttt{baseline\_a1c} & $2.2 \times 10^{-4}$ & $2.2 \times 10^{-4}$\\
+\cline{3-5}
+ &  & \texttt{bs\_type:baseline\_a1c} & $3.8 \times 10^{-3}$ & $3.8 \times 10^{-3}$\\
+\cline{3-5}
+ &  & \texttt{gender:baseline\_a1c} & $4.8 \times 10^{-3}$ & $4.8 \times 10^{-3}$\\
+\cline{3-5}
+ &  & \texttt{gender:baseline\_bmi} & $2 \times 10^{-3}$ & $2 \times 10^{-3}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[no\_self\_report]:bs\_type} & 0.17 & 0.17\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[never]:bs\_type} & $-2.4 \times 10^{-2}$ & $-2.4 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{smoking\_status[former]:bs\_type} & $-2.4 \times 10^{-2}$ & $-2.4 \times 10^{-2}$\\
+\cline{3-5}
+ &  & \texttt{site[NC]:bs\_type} & -0.12 & -0.12\\
+\cline{3-5}
+ & \multirow{-21}{*}{\centering\arraybackslash $\bm \beta_\mu$} & \texttt{site[SC]:bs\_type} & -0.10 & -0.10\\
+\cline{2-5}
+\multirow{-22}{*}{\centering\arraybackslash Outcome} & $\sigma^2_{\text{y}}$ & \texttt{---} & $1 \times 10^{-2}$ & $1 \times 10^{-2}$\\
+\hline
+\end{tabular}\caption{Coefficients values used to generate simulated datasets. Simulation 1 is the simulation study presented in the main paper. Simulation 2 is the simulation study evaluating the eligibility agnostic matched cohort.}
+\end{table}\label{table:sim_coef}
