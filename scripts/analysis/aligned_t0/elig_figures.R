@@ -3,7 +3,6 @@ library(glue)
 library(arrow)
 library(patchwork)
 source('scripts/helpers.R')
-# source('scripts/patchwork_fix.R')
 
 ### Directory where EHR data is stored
 ehr_dir <- '/n/haneuse_ehr_l3/V1.0'
@@ -117,7 +116,7 @@ p1 <-
   ggplot(hypothetical_patterns, aes(x = sum_elig, y = sum_inelig, width=.5, height=.5)) + 
   facet_wrap(~'% Weight Change') +
   geom_point(aes(color = pattern, alpha = !is.na(n)), size = 0.8) +
-  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 2.5, alpha = 0.7) + 
+  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 3, alpha = 0.7) + 
   scale_alpha_manual(values = c(0.5, 0)) + 
   guides(alpha = 'none',
          fill = 'none',
@@ -187,7 +186,7 @@ p2 <-
   ggplot(hypothetical_patterns_remission, aes(x = sum_elig, y = sum_inelig)) + 
   facet_wrap(~'Diabetes Remission') +
   geom_point(aes(color = pattern, alpha = !is.na(n)), size = 0.8) +
-  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 2.5, alpha = 0.7) + 
+  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 3, alpha = 0.7) + 
   scale_alpha_manual(values = c(0.5, 0)) + 
   guides(alpha = 'none',
          fill = 'none',
@@ -214,16 +213,17 @@ p2 <-
   labs(x = '# of Operationalizations Ascertained to be Eligible (R = 1, E = 1)',
        y = '# of Operationalizations Ascertained to be Ineligible (R = 1, E = 0)',
        color = 'Eligibility\n(Ascertainment)',
+       title = 'Frequency of Eligibility Ascertainment/Status',
+       subtitle = 'Across 40 Operationalizations of Eligibility Criteria',
        tag = '')
 
 
-(p_elig + 
-    (p1/p2 +
-       plot_layout(axis_titles = "collect",
-                   guides = 'collect')
-    ) +
-    theme(legend.direction = 'vertical')
-) + 
-  plot_layout(widths = c(0.35, 0.65)) 
 
-ggsave('figures/aligned_t0/application/elig_dist.pdf', height = 12, width = 16)
+
+(p_elig + p1) +
+  plot_layout(widths = c(0.4, 0.6)) 
+
+ggsave('figures/aligned_t0/application/elig_dist.pdf', height = 10, width = 16)
+
+p2
+ggsave('figures/aligned_t0/application/elig_dist_supp.pdf', height = 10, width = 0.6 * 16)
