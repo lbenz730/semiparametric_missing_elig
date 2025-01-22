@@ -48,7 +48,7 @@ Tables saved out from various analyses
 .sh files for batch jobs on the cluster 
 
 * __aligned_t0_sims_loop.sh__: SBATCH job file for running simulations for comnination of estimator/simulation parameters
-* __run_aligned_t0_loop.sh_: Wrapper for fully 2-D job array for __aligned_t0_sims_loop.sh__ .
+* __run_aligned_t0_loop.sh__: Wrapper for fully 2-D job array for __aligned_t0_sims_loop.sh__ .
 * __cc_estimator.sh__: Job array to fit $\hat\theta_\text{CC}$ for weight change outcome, over array of 40 operationalizations of eligibility 
 * __cc_estimator_remission.sh__: Job array to fit $\hat\theta_\text{CC}$ for diabetes remission outcome, over array of 40 operationalizations of eligibility 
 * __eif_estimator.sh__: Job array to fit $\hat\theta_\text{EIF}$ for weight change outcome, over array of 40 operationalizations of eligibility 
