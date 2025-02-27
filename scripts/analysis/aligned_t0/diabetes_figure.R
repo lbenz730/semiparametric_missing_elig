@@ -101,10 +101,10 @@ p1 <-
   geom_point(color = 'firebrick', size = 4) +
   theme(legend.position = 'none',
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 20),
+        axis.text.y = element_text(size = 14),
         strip.text.x = element_text(size = 20),
         strip.text.y = element_text(size = 20),
-        axis.title = element_text(size = 28),
+        axis.title = element_text(size = 22),
         panel.spacing = unit(1, "lines")) + 
   scale_y_continuous(breaks = seq(5.5, 10, 0.5), labels = function(x) paste0(sprintf('%0.1f', x), '%')) + 
   scale_x_continuous(limits = 365.25 * c(-2.25, 0.25),
@@ -125,25 +125,30 @@ p2 <-
                alpha = 0.5) + 
   geom_point(size = 3, aes(fill = med_type), pch = 21)  +
   scale_y_discrete(drop = F) + 
-  theme(legend.position = 'none',
+  theme(legend.position = 'bottom',
         strip.text.x = element_blank(),
         strip.text.y = element_text(size = 20),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 20),
-        axis.title = element_text(size = 28),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        axis.title = element_text(size = 22),
+        legend.text = element_text(size = 20),
         panel.spacing = unit(1, "lines")) + 
   scale_x_continuous(limits = 365.25 * c(-2.25, 0.25),
                      breaks = 365.25 * c(-2, -1, 0),
                      labels = c('-24', '-12', '0')) +
   labs(x = 'Time Relative to Date of Bariatric Surgery (Months)',
-       y = '')
+       y = '',
+       fill = '',
+       color = '')
 
 p1/p2 + 
   plot_layout(heights = c(1.3, 1), axis_titles = "collect") + 
-  plot_annotation(title = 'EHR Derived Diabetes Measurements',
-                  subtitle = 'Select DURABLE Surgical Patients', 
-                  theme = theme(plot.title = element_text(hjust = 0.5, size = 32),
-                                plot.subtitle = element_text(hjust = 0.5, size = 24))) 
+  plot_annotation(
+    # title = 'EHR Derived Diabetes Measurements',
+    # subtitle = 'Select DURABLE Surgical Patients', 
+    theme = theme(plot.title = element_text(hjust = 0.5, size = 32),
+                  plot.subtitle = element_text(hjust = 0.5, size = 24))) 
 
 
 ggsave('figures/aligned_t0/application/diabetes_elig.png', height = 9/1.2, width = 16/1.2)

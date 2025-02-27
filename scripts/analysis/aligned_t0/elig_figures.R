@@ -47,8 +47,37 @@ df_elig <-
                                            elig_status == 'Missing Eligibility' ~ '(R" == "0,"~"E" == "?)")'))) %>% 
   mutate('outcome_' = paste0('"', outcome, '"'))
 
-p_elig <-
-  ggplot(df_elig, aes(x = as.factor(diabetes_lookback), y = n)) +
+p_elig_1 <-
+  ggplot(df_elig %>% filter(outcome == '% Weight Change'), aes(x = as.factor(diabetes_lookback), y = n)) +
+  facet_grid(elig_status_~outcome_, labeller = labeller(.cols = label_parsed, .rows = label_parsed, .multi_line = TRUE), scales = 'free_y') +
+  geom_line(aes(color = as.factor(bmi_lookback),
+                group = paste(rx_philosophy, bmi_lookback),
+                lty = rx_philosophy)) +
+  geom_point(aes(color = as.factor(bmi_lookback)),
+             size = 3) + 
+  labs(x = 'Diabetes Labs Lookback Window (Months)',
+       y = '# of Surgical Patients',
+       lty = 'TD2M via Rx',
+       color = 'BMI Lookback (Months)',
+       tag = 'A)',
+       title = 'Eligibility Ascertainment Distribution',
+       subtitle = 'Among 14,809 Patients Receiving RYGB or SG') + 
+  scale_y_continuous(labels = ~scales::number(.x, big.mark = ',')) +
+  theme_bw() +
+  theme(legend.position = 'bottom', 
+        legend.box = 'vertical',
+        legend.title = element_text(size = 14),
+        axis.text = element_text(size = 12), 
+        plot.title = element_text(hjust = 0.5, size = 24),
+        plot.subtitle = element_text(hjust = 0.5, size = 18),
+        axis.title = element_text(size = 20),
+        strip.text = element_text(size = 14),
+        plot.tag = element_text(size = 20),
+        plot.caption = element_text(size = 10),
+        legend.text = element_text(size = 10))
+
+p_elig_2 <-
+  ggplot(df_elig %>% filter(outcome == 'Diabetes Remission'), aes(x = as.factor(diabetes_lookback), y = n)) +
   facet_grid(elig_status_~outcome_, labeller = labeller(.cols = label_parsed, .rows = label_parsed, .multi_line = TRUE), scales = 'free_y') +
   geom_line(aes(color = as.factor(bmi_lookback),
                 group = paste(rx_philosophy, bmi_lookback),
@@ -116,7 +145,7 @@ p1 <-
   ggplot(hypothetical_patterns, aes(x = sum_elig, y = sum_inelig, width=.5, height=.5)) + 
   facet_wrap(~'% Weight Change') +
   geom_point(aes(color = pattern, alpha = !is.na(n)), size = 0.8) +
-  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 3, alpha = 0.7) + 
+  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 4, alpha = 0.7) + 
   scale_alpha_manual(values = c(0.5, 0)) + 
   guides(alpha = 'none',
          fill = 'none',
@@ -186,7 +215,7 @@ p2 <-
   ggplot(hypothetical_patterns_remission, aes(x = sum_elig, y = sum_inelig)) + 
   facet_wrap(~'Diabetes Remission') +
   geom_point(aes(color = pattern, alpha = !is.na(n)), size = 0.8) +
-  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 3, alpha = 0.7) + 
+  geom_label(aes(label = scales::number(n, big.mark = ','), fill = pattern), size = 4, alpha = 0.7) + 
   scale_alpha_manual(values = c(0.5, 0)) + 
   guides(alpha = 'none',
          fill = 'none',
@@ -220,10 +249,12 @@ p2 <-
 
 
 
-(p_elig + p1) +
-  plot_layout(widths = c(0.4, 0.6)) 
+(p_elig_1 + p1) +
+  plot_layout(widths = c(0.3, 0.7)) 
 
 ggsave('figures/aligned_t0/application/elig_dist.pdf', height = 10, width = 16)
 
-p2
-ggsave('figures/aligned_t0/application/elig_dist_supp.pdf', height = 10, width = 0.6 * 16)
+(p_elig_2 + p2) +
+  plot_layout(widths = c(0.3, 0.7)) 
+
+ggsave('figures/aligned_t0/application/elig_dist_supp.pdf', height = 10, width = 16)
