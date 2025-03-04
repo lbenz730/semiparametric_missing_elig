@@ -1,0 +1,16 @@
+sbatch jobs/application/cc_estimator.sh
+sleep 1 
+sbatch jobs/application/cc_estimator_remission.sh
+sleep 1 
+sbatch jobs/application/iwor_estimator.sh
+sleep 1 
+sbatch jobs/application/iwor_estimator_remission.sh
+sleep 1 
+sbatch jobs/application/eif_estimator.sh
+sleep 1 
+sbatch jobs/application/eif_estimator_remission.sh
+sleep 1 
+sbatch jobs/application/if_estimator.sh
+sleep 1 
+sbatch jobs/application/if_estimator_remission.sh
+sleep 1 

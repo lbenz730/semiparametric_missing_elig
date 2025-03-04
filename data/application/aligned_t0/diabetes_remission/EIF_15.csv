@@ -1,2 +1,2 @@
-bmi_lookback,diabetes_lookback,rx_lookback,scenario_id,att_rygb,sd_rygb,att_sleeve,sd_sleeve,estimator
-3,6,0,15,0.032806800034872435,0.03956683486634364,0.04237809444485893,0.018211866954240062,EIF Ratio Estimator
+bmi_lookback,diabetes_lookback,rx_lookback,scenario_id,att_rygb,sd_rygb,estimator
+3,6,0,15,0.035900609153388434,0.039817329859463936,EIF Ratio Estimator

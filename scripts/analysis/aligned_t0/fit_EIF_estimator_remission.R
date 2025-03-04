@@ -38,24 +38,24 @@ df <-
 eif_estimator <- function(df, models, n_splits) {
   ### Unpack nuisance model instructions
   eta <- models$eta
-  epsilon_star <- models$epsilon_star
+  epsilon <- models$epsilon
   mu <- models$mu
   xi <- models$xi
   u <- models$u
-  gamma_tilde <- models$gamma_tilde
-  chi_tilde <- models$chi_tilde
+  gamma <- models$gamma
+  chi <- models$chi
   
   ### Create storage for predictions
   df <- 
     df %>% 
     mutate('eta1_hat' = NA,
            'eta0_hat' = NA,
-           'epsilon1_star_hat' = NA,
+           'epsilon1_hat' = NA,
            'mu0_hat' = NA,
            'xi_hat' = NA,
            'u_hat' = NA,
-           'gamma_tilde_hat' = NA,
-           'chi_tilde_hat' = NA)
+           'gamma_hat' = NA,
+           'chi_hat' = NA)
   
   
   ### Sample split
@@ -184,26 +184,26 @@ eif_estimator <- function(df, models, n_splits) {
     df$eta0_hat[test_ids] <- eta0_hat
     
     ### Epsilon Star
-    cat('Fitting EPSILON_STAR on Split [', i, '/', n_splits, ']\n', sep = '')
-    if(epsilon_star$type == 'GLM') {
-      epsilon_star_fit <- glm(epsilon_star$formula, family = 'binomial', data = filter(df_train, R == 1))
-      epsilon1_star_hat <- predict(epsilon_star_fit, newdata = mutate(df_test, 'A' = 1), type = 'response')
-    } else if(epsilon_star$type == 'super_learner') {
+    cat('Fitting EPSILON on Split [', i, '/', n_splits, ']\n', sep = '')
+    if(epsilon$type == 'GLM') {
+      epsilon_fit <- glm(epsilon$formula, family = 'binomial', data = filter(df_train, R == 1))
+      epsilon1_hat <- predict(epsilon_fit, newdata = mutate(df_test, 'A' = 1), type = 'response')
+    } else if(epsilon$type == 'super_learner') {
       ### Create datasets to train super learner
       Y_train <- 
         df_train %>% 
         filter(R == 1) %>% 
-        pull(!!epsilon_star$Y)
+        pull(!!epsilon$Y)
       
       X_train <- 
         df_train %>% 
         filter(R == 1) %>% 
-        select(all_of(epsilon_star$X))
+        select(all_of(epsilon$X))
       
       ### Set to predict on
       X_test <- 
         df_test %>% 
-        select(all_of(epsilon_star$X)) %>% 
+        select(all_of(epsilon$X)) %>% 
         mutate('A' = 1)
       
       
@@ -215,18 +215,18 @@ eif_estimator <- function(df, models, n_splits) {
         create.Learner("SL.ranger", tune = list('mtry' = mtry_seq,
                                                 'num.trees' = tree_seq,
                                                 'min.node.size' = min_n_seq))
-      sl_epslion_star <- 
+      sl_epslion <- 
         SuperLearner(Y = Y_train,
                      X = X_train, 
                      family = 'binomial',
-                     SL.library = c(rf_learners$names, epsilon_star$sl_libs))
+                     SL.library = c(rf_learners$names, epsilon$sl_libs))
       
-      epsilon1_star_hat <- 
-        as.vector(predict.SuperLearner(sl_epslion_star, newdata = X_test, onlySL = T)$pred)
+      epsilon1_hat <- 
+        as.vector(predict.SuperLearner(sl_epslion, newdata = X_test, onlySL = T)$pred)
       
     }
     
-    df$epsilon1_star_hat[test_ids] <- epsilon1_star_hat
+    df$epsilon1_hat[test_ids] <- epsilon1_hat
     
     ### Fit Mu
     cat('Fitting MU0 on Split [', i, '/', n_splits, ']\n', sep = '')
@@ -363,7 +363,7 @@ eif_estimator <- function(df, models, n_splits) {
       df_train %>% 
       mutate('Emu0'= eligible * mu0_hat,
              'E_uratio' = eligible * u_hat/(1-u_hat),
-             'EY_uratio' = eligible * eGFR * u_hat/(1-u_hat),
+             'EY_uratio' = eligible * remission * u_hat/(1-u_hat),
              'Emu0_uratio' = eligible * mu0_hat * u_hat/(1-u_hat)) %>% 
       mutate('Emu0' = ifelse(eligible == 0, 0, Emu0),
              'E_uratio' = ifelse(eligible == 0, 0, E_uratio),
@@ -374,7 +374,7 @@ eif_estimator <- function(df, models, n_splits) {
       df_test %>% 
       mutate('Emu0'= eligible * mu0_hat,
              'E_uratio' = eligible * u_hat/(1-u_hat),
-             'EY_uratio' = eligible * eGFR * u_hat/(1-u_hat),
+             'EY_uratio' = eligible * remission * u_hat/(1-u_hat),
              'Emu0_uratio' = eligible * mu0_hat * u_hat/(1-u_hat)) %>% 
       mutate('Emu0' = ifelse(eligible == 0, 0, Emu0),
              'E_uratio' = ifelse(eligible == 0, 0, E_uratio),
@@ -422,27 +422,27 @@ eif_estimator <- function(df, models, n_splits) {
       df$xi_hat[test_ids] <- xi_hat
     }
     
-    cat('Fitting GAMMA_TILDE on Split [', i, '/', n_splits, ']\n', sep = '')
-    if(gamma_tilde$type == 'super_learner') {
+    cat('Fitting GAMMA on Split [', i, '/', n_splits, ']\n', sep = '')
+    if(gamma$type == 'super_learner') {
       ### Create datasets to train super learner
       Y_train <- 
         df_train %>% 
         filter(R == 1, A == 0) %>% 
-        pull(!!gamma_tilde$Y)
+        pull(!!gamma$Y)
       
       X_train <- 
         df_train %>% 
         filter(R == 1, A == 0) %>% 
-        select(all_of(gamma_tilde$X)) 
+        select(all_of(gamma$X)) 
       
-      X_train_mat <- model.matrix(gamma_tilde$formula, X_train)[,-1] ### Rm intercept term since some other models will add it
+      X_train_mat <- model.matrix(gamma$formula, X_train)[,-1] ### Rm intercept term since some other models will add it
       colnames(X_train_mat) <- gsub(':', '_', colnames(X_train_mat))
       
       ### Set to predict on
       X_test <- 
         df_test %>% 
-        select(all_of(gamma_tilde$X)) 
-      X_test_mat <- clean_test_matrix(model.matrix(gamma_tilde$formula, X_test)[,-1], X_train_mat)
+        select(all_of(gamma$X)) 
+      X_test_mat <- clean_test_matrix(model.matrix(gamma$formula, X_test)[,-1], X_train_mat)
       
       
       ### Random Forest Hyperparameters
@@ -454,37 +454,37 @@ eif_estimator <- function(df, models, n_splits) {
                                                 'num.trees' = tree_seq,
                                                 'min.node.size' = min_n_seq))
       
-      sl_gamma_tilde <- 
+      sl_gamma <- 
         SuperLearner(Y = Y_train,
                      X = X_train_mat, 
-                     SL.library = c(gamma_tilde$sl_libs, rf_learners$names))
+                     SL.library = c(gamma$sl_libs, rf_learners$names))
       
-      gamma_tilde_hat <- predict.SuperLearner(sl_gamma_tilde, newdata = X_test_mat, onlySL = T)$pred
-      df$gamma_tilde_hat[test_ids] <- gamma_tilde_hat
+      gamma_hat <- predict.SuperLearner(sl_gamma, newdata = X_test_mat, onlySL = T)$pred
+      df$gamma_hat[test_ids] <- gamma_hat
       
     } 
     
-    cat('Fitting CHI_TILDE on Split [', i, '/', n_splits, ']\n', sep = '')
-    if(chi_tilde$type == 'super_learner') {
+    cat('Fitting CHI on Split [', i, '/', n_splits, ']\n', sep = '')
+    if(chi$type == 'super_learner') {
       ### Create datasets to train super learner
       Y_train <- 
         df_train %>% 
         filter(R == 1, A == 0) %>% 
-        pull(!!chi_tilde$Y)
+        pull(!!chi$Y)
       
       X_train <- 
         df_train %>% 
         filter(R == 1, A == 0) %>% 
-        select(all_of(chi_tilde$X)) 
+        select(all_of(chi$X)) 
       
-      X_train_mat <- model.matrix(chi_tilde$formula, X_train)[,-1] ### Rm intercept term since some other models will add it
+      X_train_mat <- model.matrix(chi$formula, X_train)[,-1] ### Rm intercept term since some other models will add it
       colnames(X_train_mat) <- gsub(':', '_', colnames(X_train_mat))
       
       ### Set to predict on
       X_test <- 
         df_test %>% 
-        select(all_of(chi_tilde$X)) 
-      X_test_mat <- clean_test_matrix(model.matrix(chi_tilde$formula, X_test)[,-1], X_train_mat)
+        select(all_of(chi$X)) 
+      X_test_mat <- clean_test_matrix(model.matrix(chi$formula, X_test)[,-1], X_train_mat)
       
       
       ### Random Forest Hyperparameters
@@ -496,19 +496,19 @@ eif_estimator <- function(df, models, n_splits) {
                                                 'num.trees' = tree_seq,
                                                 'min.node.size' = min_n_seq))
       
-      sl_chi_tilde <- 
+      sl_chi <- 
         SuperLearner(Y = Y_train,
                      X = X_train_mat, 
-                     SL.library = c(chi_tilde$sl_libs, rf_learners$names))
+                     SL.library = c(chi$sl_libs, rf_learners$names))
       
-      chi_tilde_hat <- predict.SuperLearner(sl_chi_tilde, newdata = X_test_mat, onlySL = T)$pred
-      df$chi_tilde_hat[test_ids] <- chi_tilde_hat
+      chi_hat <- predict.SuperLearner(sl_chi, newdata = X_test_mat, onlySL = T)$pred
+      df$chi_hat[test_ids] <- chi_hat
       
     } 
   }
   
   ### Compute estimator
-  tau_hat <-
+  df_final <-
     df %>% 
     ### need some value to get canceled by 0 that's not NA
     mutate('eligible' = replace(eligible, R == 0, 0),
@@ -518,21 +518,31 @@ eif_estimator <- function(df, models, n_splits) {
            'u_hat' = replace(u_hat, R == 1 & is.na(u_hat), 0)
     ) %>%
     ### Compute numerator and denominator one step estimators (eg., uncentered influence functions)
-    mutate('alpha_OS' = A * (1 - R/eta1_hat) * epsilon1_star_hat + A * R * eligible/eta1_hat,
+    mutate('alpha_OS' = A * (1 - R/eta1_hat) * epsilon1_hat + A * R * eligible/eta1_hat,
            'beta_OS' = 
-             A * (epsilon1_star_hat * remission - xi_hat)
-           + A * R/eta1_hat * ((eligible - epsilon1_star_hat) * remission - (eligible * mu0_hat - xi_hat))
-           - (1-A) * R/eta1_hat * (eligible * u_hat/(1-u_hat) * (remission - mu0_hat) - (gamma_tilde_hat * remission - chi_tilde_hat))
-           - (1-A) * eta0_hat/eta1_hat * ((gamma_tilde_hat * remission - chi_tilde_hat))
+             A * (epsilon1_hat * remission - xi_hat)
+           + A * R/eta1_hat * ((eligible - epsilon1_hat) * remission - (eligible * mu0_hat - xi_hat))
+           - (1-A) * R/eta1_hat * (eligible * u_hat/(1-u_hat) * (remission - mu0_hat) - (gamma_hat * remission - chi_hat))
+           - (1-A) * eta0_hat/eta1_hat * ((gamma_hat * remission - chi_hat))
     ) %>% 
     ### Subject Specific Contributions (centered)
     mutate('alpha_IF' = alpha_OS - mean(alpha_OS),
            'beta_IF' = beta_OS - mean(beta_OS)) %>% 
     
     ### Overall ATT IF Subject Contribution (eg. following Takatsu 2023 Lemma S1 or Kennedy 2022 Review Example 6) 
-    mutate('subject_IF'= beta_IF/mean(alpha_OS) - mean(beta_OS)/mean(alpha_OS)^2 * alpha_IF) %>%
-    
-    ### Estimates of ATT and Variance
+    mutate('subject_IF'= beta_IF/mean(alpha_OS) - mean(beta_OS)/mean(alpha_OS)^2 * alpha_IF) 
+  
+  ### Save Subject Specific Contributions
+  if(!dir.exists( glue('{data_dir}/aligned_t0/outputs/') )) {
+    dir.create(glue('{data_dir}/aligned_t0/outputs/'))
+    dir.create(glue('{data_dir}/aligned_t0/outputs/remission'))
+  }
+  
+  write_parquet(df_final, glue('{data_dir}/aligned_t0/outputs/remission/raw_EIF_{s_id}.parquet'))
+  
+  ### Estimates of ATT and Variance
+  tau_hat <- 
+    df_final %>% 
     summarise('att_hat' = mean(beta_OS)/mean(alpha_OS),
               'sd' = sd(subject_IF)/sqrt(nrow(df)))
   
@@ -554,7 +564,7 @@ model_list <-
                  'sl_libs' = c('SL.glm', 'SL.gam')),
     
     ### E ~ Lc + A + Y | R = 1
-    'epsilon_star' = list('type' = 'super_learner',
+    'epsilon' = list('type' = 'super_learner',
                           'Y' = 'eligible',
                           'X' = c('site', 'gender', 'baseline_age', 'smoking_status', 'eGFR', 'race', 'hypertension', 'dyslipidemia', 'calendar_year', 'A', 'remission'),
                           'formula' = ~site + gender + baseline_age + smoking_status + eGFR + race + hypertension + dyslipidemia + calendar_year + A + remission,
@@ -585,18 +595,18 @@ model_list <-
                 'sl_libs' = c('SL.polymars', 'SL.lm')),
     
     ### E * u/(1-u) ~ Lc, A = 0, R = 1, Y
-    'gamma_tilde' =  list('type' = 'super_learner',
-                          'Y' = 'E_uratio',
-                          'X' = c('site', 'gender', 'baseline_age', 'smoking_status', 'eGFR', 'race', 'hypertension', 'dyslipidemia', 'calendar_year', 'remission'),
-                          'formula' = ~site + gender + baseline_age + smoking_status + eGFR + race + hypertension + dyslipidemia + calendar_year + remission,
-                          'sl_libs' = c('SL.polymars', 'SL.lm')),
+    'gamma' =  list('type' = 'super_learner',
+                    'Y' = 'E_uratio',
+                    'X' = c('site', 'gender', 'baseline_age', 'smoking_status', 'eGFR', 'race', 'hypertension', 'dyslipidemia', 'calendar_year', 'remission'),
+                    'formula' = ~site + gender + baseline_age + smoking_status + eGFR + race + hypertension + dyslipidemia + calendar_year + remission,
+                    'sl_libs' = c('SL.polymars', 'SL.lm')),
     
     ### E * mu0 * u/(1-u) ~ Lc, A = 0, R = 1, Y
-    'chi_tilde' = list('type' = 'super_learner',
-                       'Y' = 'Emu0_uratio',
-                       'X' = c('site', 'gender', 'baseline_age', 'smoking_status', 'eGFR', 'race', 'hypertension', 'dyslipidemia', 'calendar_year', 'remission'),
-                       'formula' = ~site + gender + baseline_age + smoking_status + eGFR + race + hypertension + dyslipidemia + calendar_year + remission,
-                       'sl_libs' = c('SL.polymars', 'SL.lm'))
+    'chi' = list('type' = 'super_learner',
+                 'Y' = 'Emu0_uratio',
+                 'X' = c('site', 'gender', 'baseline_age', 'smoking_status', 'eGFR', 'race', 'hypertension', 'dyslipidemia', 'calendar_year', 'remission'),
+                 'formula' = ~site + gender + baseline_age + smoking_status + eGFR + race + hypertension + dyslipidemia + calendar_year + remission,
+                 'sl_libs' = c('SL.polymars', 'SL.lm'))
   )
 
 ### Run Analysis
@@ -606,18 +616,11 @@ df_rygb <-
                 models = model_list,
                 n_splits = 2)
 
-df_sleeve <- 
-  eif_estimator(df = mutate(df, 'A' = as.numeric(bs_type == 'SLEEVE')),
-                models = model_list,
-                n_splits = 2)
-
 df_results <- 
   df_id %>% 
   filter(scenario_id == s_id) %>% 
   mutate('att_rygb' = df_rygb$att_hat,
          'sd_rygb' = df_rygb$sd,
-         'att_sleeve' = -df_sleeve$att_hat, ### Since we want an ATC like
-         'sd_sleeve' = df_sleeve$sd,
          'estimator' = 'EIF Ratio Estimator')
 
 write_csv(df_results, glue('data/application/aligned_t0/diabetes_remission/EIF_{s_id}.csv'))

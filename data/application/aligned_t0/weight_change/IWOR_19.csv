@@ -1,0 +1,2 @@
+scenario_id,bmi_lookback,diabetes_lookback,rx_lookback,att_rygb,sd_rygb,estimator
+19,3,24,0,-0.06451330777401053,0.0024036661536457177,Inverse Weighted Outcome Regression

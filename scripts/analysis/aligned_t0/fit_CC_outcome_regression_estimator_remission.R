@@ -45,18 +45,15 @@ mu <- glm(mu0_formula,
           family = 'binomial',
           data = df_cc)
 df_cc$mu0_hat <- predict(mu, newdata = mutate(df_cc, A = 0), type = 'response')
-df_cc$mu1_hat <- predict(mu, newdata = mutate(df_cc, A = 1), type = 'response')
 
 tau_att <- 
   df_cc %>% 
-  summarise('att_rygb' = mean( (remission - mu0_hat)[A == 1] ),
-            'att_sleeve' = mean( (mu1_hat - remission)[A == 0] )) 
+  summarise('att_rygb' = mean( (remission - mu0_hat)[A == 1] )) 
 
 ### Boostrap SD
 set.seed(104)
 n_boot <- 1000
 tau_boot_rygb <- rep(NA, n_boot)
-tau_boot_sleeve <- rep(NA, n_boot)
 for(b in 1:n_boot) {
   if(b %% 100 == 0) {
     cat('Boostrapping Iteration [', b, '/', n_boot, ']\n', sep = '')
@@ -71,15 +68,12 @@ for(b in 1:n_boot) {
                  family = 'binomial',
                  data = df_boot)
   df_boot$mu0_hat <- predict(mu_boot, newdata = mutate(df_boot, A = 0), type = 'response')
-  df_boot$mu1_hat <- predict(mu_boot, newdata = mutate(df_boot, A = 1), type = 'response')
   
   tau_boot <- 
     df_boot %>% 
-    summarise('att_rygb' = mean( (remission - mu0_hat)[A == 1] ),
-              'att_sleeve' = mean( (mu1_hat - remission)[A == 0] )) 
+    summarise('att_rygb' = mean( (remission - mu0_hat)[A == 1] )) 
   
   tau_boot_rygb[b] <- tau_boot$att_rygb
-  tau_boot_sleeve[b] <- tau_boot$att_sleeve
   
 }
 
@@ -89,8 +83,6 @@ df_results <-
   select(scenario_id, everything()) %>% 
   mutate('att_rygb' = tau_att$att_rygb,
          'sd_rygb' = sd(tau_boot_rygb),
-         'att_sleeve' = tau_att$att_sleeve,
-         'sd_sleeve' = sd(tau_boot_sleeve),
          'estimator' = 'Complete Case Outcome Regression')
 
 write_csv(df_results, glue('data/application/aligned_t0/diabetes_remission/cc_outcome_reg_{s_id}.csv'))

@@ -43,18 +43,15 @@ df_cc$A <- as.numeric(df_cc$bs_type == 'RYGB')
 ### 2) Fit Outcome model 
 mu <- lm(mu0_formula, data = df_cc)
 df_cc$mu0_hat <- predict(mu, newdata = mutate(df_cc, A = 0))
-df_cc$mu1_hat <- predict(mu, newdata = mutate(df_cc, A = 1))
 
 tau_att <- 
   df_cc %>% 
-  summarise('att_rygb' = mean( (pct_wt_change - mu0_hat)[A == 1] ),
-            'att_sleeve' = mean( (mu1_hat - pct_wt_change)[A == 0] )) 
+  summarise('att_rygb' = mean( (pct_wt_change - mu0_hat)[A == 1] )) 
 
 ### Boostrap SD
 set.seed(104)
 n_boot <- 1000
 tau_boot_rygb <- rep(NA, n_boot)
-tau_boot_sleeve <- rep(NA, n_boot)
 for(b in 1:n_boot) {
   if(b %% 100 == 0) {
     cat('Boostrapping Iteration [', b, '/', n_boot, ']\n', sep = '')
@@ -67,15 +64,12 @@ for(b in 1:n_boot) {
   ### Fit outcome model on boostrappped data
   mu_boot <- lm(mu0_formula, data = df_boot)
   df_boot$mu0_hat <- predict(mu_boot, newdata = mutate(df_boot, A = 0))
-  df_boot$mu1_hat <- predict(mu_boot, newdata = mutate(df_boot, A = 1))
   
   tau_boot <- 
     df_boot %>% 
-    summarise('att_rygb' = mean( (pct_wt_change - mu0_hat)[A == 1] ),
-              'att_sleeve' = mean( (mu1_hat - pct_wt_change)[A == 0] )) 
+    summarise('att_rygb' = mean( (pct_wt_change - mu0_hat)[A == 1] )) 
   
   tau_boot_rygb[b] <- tau_boot$att_rygb
-  tau_boot_sleeve[b] <- tau_boot$att_sleeve
   
 }
 
@@ -85,8 +79,6 @@ df_results <-
   select(scenario_id, everything()) %>% 
   mutate('att_rygb' = tau_att$att_rygb,
          'sd_rygb' = sd(tau_boot_rygb),
-         'att_sleeve' = tau_att$att_sleeve,
-         'sd_sleeve' = sd(tau_boot_sleeve),
          'estimator' = 'Complete Case Outcome Regression')
 
 write_csv(df_results, glue('data/application/aligned_t0/weight_change/cc_outcome_reg_{s_id}.csv'))

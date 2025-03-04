@@ -1,0 +1,2 @@
+bmi_lookback,diabetes_lookback,rx_lookback,scenario_id,att_rygb,sd_rygb,estimator
+1,24,0,9,-0.052173175056908126,0.00779077592084352,IF Ratio Estimator

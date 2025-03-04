@@ -255,6 +255,7 @@ build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, 
     mutate('diabetes' = case_when(baseline_a1c >= 6.5 | baseline_gluF >= 126 ~ 1, ### Via Labs
                                   diabetes_rx == 1 & !metformin_only ~ 1, ### Via Rx other than metformin
                                   diabetes_rx == 1 & metformin_only & diabetes_icd9 == 1 ~ 1, ### Via Rx (metformin) + 250.x ICD-9
+                                  diabetes_rx == 1 & metformin_only & is.na(diabetes_icd9) & baseline_a1c < 6.5 & baseline_gluF < 126 ~ 0,
                                   is.na(diabetes_rx) & baseline_a1c < 6.5 & baseline_gluF < 126 ~ 0,
                                   T ~ NA),
            'insulin' = ifelse(is.na(insulin), 0, insulin),
