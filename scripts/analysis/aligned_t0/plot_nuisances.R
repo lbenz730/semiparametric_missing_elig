@@ -36,6 +36,7 @@ ggplot(df_nuisance, aes(x = value_hat, y = as.factor(diabetes_lookback))) +
        y = 'Diabetes Labs Lookback (Months)',
        fill = '') + 
   theme(axis.text = element_text(size = 16),
+        strip.text = element_text(size = 14),
         legend.text = element_text(size = 16))
 ggsave('figures/aligned_t0/application/nuisance_dist.pdf', height = 9/1.2, width = 16/1.2)
 
@@ -66,6 +67,7 @@ ggplot(df_nuisance, aes(x = value_hat, y = as.factor(diabetes_lookback))) +
        y = 'Diabetes Labs Lookback (Months)',
        fill = '') + 
   theme(axis.text = element_text(size = 16),
+        strip.text = element_text(size = 14),
         legend.text = element_text(size = 16))
 ggsave('figures/aligned_t0/application/nuisance_dist_remission.pdf', height = 9/1.2, width = 16/1.2)
 
@@ -110,6 +112,7 @@ ggplot(df_nuisance_nest, aes(x = value_hat, y = as.factor(diabetes_lookback))) +
        y = 'Diabetes Labs Lookback (Months)',
        fill = 'BMI Lookback (Months)') + 
   theme(axis.text = element_text(size = 12),
+        strip.text = element_text(size = 14),
         legend.text = element_text(size = 16))
 
 ggsave('figures/aligned_t0/application/nuisance_nested.pdf', height = 9/1.2, width = 16/1.2)

@@ -51,6 +51,7 @@ p_weightloss <-
        color = '',
        fill = '') + 
   theme(axis.text = element_text(size = 16),
+        strip.text.x = element_text(size = 16),
         plot.subtitle = element_text(size = 24),
         legend.position = 'none')
 
@@ -112,6 +113,7 @@ p_remission <-
        color = '',
        fill = '') + 
   theme(axis.text = element_text(size = 16),
+        strip.text.x = element_text(size = 16),
         plot.subtitle = element_text(size = 24),
         legend.text = element_text(size = 16))  
 
