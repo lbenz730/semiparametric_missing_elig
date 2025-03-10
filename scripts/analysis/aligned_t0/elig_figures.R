@@ -57,7 +57,7 @@ p_elig_1 <-
              size = 3) + 
   labs(x = 'Diabetes Labs Lookback Window (Months)',
        y = '# of Surgical Patients',
-       lty = 'TD2M via Rx',
+       lty = 'T2DM via Rx',
        color = 'BMI Lookback (Months)',
        tag = 'A)',
        title = 'Eligibility Ascertainment Distribution',
@@ -86,7 +86,7 @@ p_elig_2 <-
              size = 3) + 
   labs(x = 'Diabetes Labs Lookback Window (Months)',
        y = '# of Surgical Patients',
-       lty = 'TD2M via Rx',
+       lty = 'T2DM via Rx',
        color = 'BMI Lookback (Months)',
        tag = 'A)',
        title = 'Eligibility Ascertainment Distribution',
@@ -244,17 +244,17 @@ p2 <-
        color = 'Eligibility\n(Ascertainment)',
        title = 'Frequency of Eligibility Ascertainment/Status',
        subtitle = 'Across 40 Operationalizations of Eligibility Criteria',
-       tag = '')
+       tag = 'B)')
 
 
 
 
 (p_elig_1 + p1) +
-  plot_layout(widths = c(0.3, 0.7)) 
+  plot_layout(widths = c(0.33, 0.67)) 
 
 ggsave('figures/aligned_t0/application/elig_dist.pdf', height = 10, width = 16)
 
 (p_elig_2 + p2) +
-  plot_layout(widths = c(0.3, 0.7)) 
+  plot_layout(widths = c(0.33, 0.67)) 
 
 ggsave('figures/aligned_t0/application/elig_dist_supp.pdf', height = 10, width = 16)
