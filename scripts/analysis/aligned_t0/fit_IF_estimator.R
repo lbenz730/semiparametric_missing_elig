@@ -31,6 +31,14 @@ df <-
   filter(scenario_id == s_id)
 
 
+### if_estimator: function to compute IF estimator
+### Argumements
+###   df: data frame containing treatment variable (must be called A), 
+###       eligibility (must be called eligible), ascertainment (must be called R), covariates, and outcome
+###   models: list of specifications for each nuisance model. 
+###   n_splits = # of splits to be used in sample splitting.
+###
+### Output: Data frame with treatment effect and standard error
 if_estimator <- function(df, models, n_splits) {
   ### Unpack nuisance model instructions
   eta <- models$eta
@@ -476,7 +484,16 @@ if_estimator <- function(df, models, n_splits) {
 }
 
 
-### Model Instructions
+### Model Instructions for each nuisance function
+### Each specification should contain the following structure
+###       type = model_type. We strongly recommend super_learner. For select nusiance models parametric options also exist
+###       Y = modeling target
+###       X = covariates used in model
+###       formula = model specification formula object
+###       sl_libs = libraries to supply to super learner (in addition to combinations of SL.ranger)
+###
+###       Additional options exist for stratification by A (mu,eta) or fit among eligible population (mu, u) 
+##
 model_list <- 
   list(
     ### R ~ Lc + A

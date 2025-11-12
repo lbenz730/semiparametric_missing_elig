@@ -179,13 +179,15 @@ df_remission <-
   group_by(subject_id) %>% 
   summarise('remission' = as.numeric(any(remission)))
 
-### Function to build our cohort
+### Function to build our cohort for each particular operationalization of eligibility criteria
 ###
 ### elig_start = date of eligibility ascertainment window beginning
 ### elig_end = date of eligibility ascertainment window end
 ### bmi_lookback = time to look back to gather baseline bmi values
 ### diabetes_lookback = time to look back to gather info on diabetes labs
 ### rx_lookback = time to look back to gather info on rx (0 = active, as in Fisher 2018 and O'Brien 2018 papers)
+###
+### Returns dataset of cohort 
 build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, rx_lookback) {
   ### Surgical Cases Between Elig, Period, Enrolled Continuously for a year prior to surgery
   df_cohort <- 

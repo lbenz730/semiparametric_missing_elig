@@ -10,14 +10,11 @@ logit <- function(x) {
   return(log(x/(1-x)))
 }
 
-### Quick way to compute logistic regression coefficients when fitting saturated model with one coefficient
-glm_quick <- function(Y, A, W) {
-  beta0 <- logit(weighted.mean(Y[A == 0], w = W[A == 0])) 
-  beta1 <- logit(weighted.mean(Y[A == 1], w = W[A == 1])) - beta0
-  return(list('beta0' = beta0, 'beta1' = beta1))
-}
-
 ### Function to compute the fitted value of a model given a list of coefficients
+### Input: dataframe df 
+### beta: list of coefficients
+###
+### output: vector X\beta
 compute_model <- function(df, beta) {
   
   ### Initialize fitted values to be 0
@@ -59,6 +56,11 @@ compute_model <- function(df, beta) {
 
 ### Function to compute the matrix of fitted group probabilities for a 
 ### multinomial given a list of coefficients
+###
+### Input: dataframe df 
+### beta: list of coefficients
+###
+### output: vector X\beta
 compute_multinomial_model <- function(df, beta) {
   ### Initialize to logit of cumumlative probability of being in each group
   probs <- matrix(beta$intercepts, nrow = nrow(df), ncol = length(beta$intercepts), byrow = T)
@@ -119,13 +121,14 @@ clean_names <- function(params, df_names) {
   return(x)
 }
 
-### Function to replace null values w/ useful string
+### Function to replace null values w/ useful string in vector x
 replace_null <- function(x, replace_string = NA) {
   x[is.null(x)] <- replace_string
   return(x)
 }
 
 
+### Truncate vector x at quantiles q
 winsorize <- function(x, q) {
   ### Get upper and lower quantiles of the data
   q_data <- quantile(x[!is.na(x)], q)
@@ -140,7 +143,12 @@ winsorize <- function(x, q) {
   
 }
 
-
+### Function to align column names and factor levels between test and train matricies
+###
+### test = test matrix
+### train = train matrix
+###
+### returns cleaned test matrix
 clean_test_matrix <- function(test, train) {
   ### Clean Names
   colnames(test) <-  gsub(':', '_', colnames(test))
@@ -171,7 +179,7 @@ model_list <- function(model) {
     cat(., sep = ',\n')
 }
 
-
+### Build AR(1) covariance structure
 ar1_Sigma <- function(n, rho, sigma) {
   exponent <- abs(matrix(1:n - 1, nrow = n, ncol = n, byrow = TRUE) - (1:n - 1))
   return(sigma^2 * rho^exponent)

@@ -1,3 +1,16 @@
+### Generate simulated dataset given set of simulation parameters
+###
+### params: list of simulation parameters with the following component
+### n_subjects = # of simulated subjects
+### n_sims = # of simulation replicates
+### treatment = treatment variable
+### outcome = outcome variable
+### elig = eligibility variable(s)
+### Lc = vector of non-eligibility defining covariates
+### models = list of nuisance model coefficients. For example values of these coefficients see specificy_inputs.R
+###
+### Output: Simulated dataset
+
 generate_data <- function(params) {
   ### Unpack Models
   n_subjects <- params$n_subjects 

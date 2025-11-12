@@ -31,6 +31,14 @@ df <-
   filter(scenario_id == s_id)
 
 
+### eif_estimator: function to compute EIF estimator
+### Argumements
+###   df: data frame containing treatment variable (must be called A), 
+###       eligibility (must be called eligible), ascertainment (must be called R), covariates, and outcome
+###   models: list of specifications for each nuisance model. 
+###   n_splits = # of splits to be used in sample splitting.
+###
+### Output: Data frame with treatment effect and standard error
 eif_estimator <- function(df, models, n_splits) {
   ### Unpack nuisance model instructions
   eta <- models$eta
@@ -356,7 +364,7 @@ eif_estimator <- function(df, models, n_splits) {
       df_test %>% 
       mutate('Emu0'= eligible * mu0_hat,
              'E_uratio' = eligible * u_hat/(1-u_hat),
-             'EY_uratio' = eligible * eGFR * u_hat/(1-u_hat),
+             'EY_uratio' = eligible * pct_wt_change * u_hat/(1-u_hat),
              'Emu0_uratio' = eligible * mu0_hat * u_hat/(1-u_hat)) %>% 
       mutate('Emu0' = ifelse(eligible == 0, 0, Emu0),
              'E_uratio' = ifelse(eligible == 0, 0, E_uratio),
@@ -532,7 +540,16 @@ eif_estimator <- function(df, models, n_splits) {
 }
 
 
-### Model Instructions
+### Model Instructions for each nuisance function
+### Each specification should contain the following structure
+###       type = model_type. We strongly recommend super_learner. For select nusiance models parametric options also exist
+###       Y = modeling target
+###       X = covariates used in model
+###       formula = model specification formula object
+###       sl_libs = libraries to supply to super learner (in addition to combinations of SL.ranger)
+###
+###       Additional options exist for stratification by A (mu,eta) or fit among eligible population (mu, u) 
+##
 model_list <- 
   list(
     ### R ~ Lc + A
