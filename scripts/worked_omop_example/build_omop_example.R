@@ -137,7 +137,7 @@ df_analysis <-
             'baseline_age' = first(2025 - year_of_birth),
             'bs_type' = as.numeric(first(procedure_source_value == 'Gastric bypass'))) %>% 
   mutate('baseline_bmi' = replace(baseline_bmi, ! person_id %in% observed_elig_ids, NA),
-         'baseline_a1c' = replace(baseline_a1c, ! person_id %in% observed_elig_ids, NA))
+         'baseline_a1c' = replace(baseline_a1c, ! person_id %in% observed_elig_ids, NA)) %>% 
   mutate('eligible' = as.numeric(baseline_bmi >= 35 & baseline_a1c >= 6.5),
          'R' = as.numeric(!is.na(eligible))) %>% 
   mutate('race_source_value' = ifelse(race_source_value == 'white', 1, 0),
