@@ -33,7 +33,8 @@ __T2DM Remission Analysis__
 __Figures__
 * __diabetes_figure.R__: Plot of diabetes figure showing frequency of certain measurements for select surgical patients __(Generates Figure 1)__
 * __elig_figures.R__: Plot eligibility distributions __(Generates Figure 2 and S2)__
-* __plot_nuisances.R__: Plotting code for distributions of nuisance functions __(Generates Figures 3, S3, and S4)__
+* __measure_times_figure.R__: Plots distribution of time between date of surgery and most recent measure of BMI/A1c __(Generates Figure 3)__
+* __plot_nuisances.R__: Plotting code for distributions of nuisance functions __(Generates Figures 4, S3, and S4)__
 * __plot_results.R__: Plot point estimates and 95% confidence intervals __(Generates Figure 4)__
 
 ## Worked OMOP Example (`worked_omop_example`)
