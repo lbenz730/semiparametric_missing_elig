@@ -36,6 +36,7 @@ __Figures__
 * __measure_times_figure.R__: Plots distribution of time between date of surgery and most recent measure of BMI/A1c __(Generates Figure 3)__
 * __plot_nuisances.R__: Plotting code for distributions of nuisance functions __(Generates Figures 4, S3, and S4)__
 * __plot_results.R__: Plot point estimates and 95% confidence intervals __(Generates Figure 4)__
+* __MAR_sensitivity_analysis.R__: Conducts sensitivity analysis for Assumption 4 (Eligibility MAR) and generates Figures S5-S8.
 
 ## Worked OMOP Example (`worked_omop_example`)
 Given that the underlying EHR data can not be shared, the example presented in the main text can not be reproduced locally. For a detailed reproducible example, we have created a working example based on OMOP-CDM formated data. In particular, we use the `omock` package to create a synthetic dataset based on OMOP standards which can be shared. We then demonstrate how to turn this data into an analytical dataset to be analyzed by $\widehat\theta_\text{EIF}$, and analyze the sythetic dataset.
