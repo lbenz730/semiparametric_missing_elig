@@ -113,10 +113,10 @@ ggplot(weight_plot %>% filter(rx_lookback == 0), aes(x = alpha_a1c, y = alpha_bm
   theme(legend.text = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 18),
         strip.text = element_text(size = 10)) +
-  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c',
+  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c (Relative to 6.5%)',
        y = expression(atop(
          "Log Odds Ratio of Completely Observed Eligibility Information",
-         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Above 35 kg/m'^2 *')'
+         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Relative to 35 kg/m'^2 *')'
        )),
        title = 'MAR Assumption Sensitivity Analysis: Difference in 3-Year Weight Loss',
        subtitle = 'Diabetes via Rx: Active at Surgery',
@@ -133,10 +133,10 @@ ggplot(weight_plot %>% filter(rx_lookback == 12), aes(x = alpha_a1c, y = alpha_b
   theme(legend.text = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 18),
         strip.text = element_text(size = 10)) +
-  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c',
+  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c (Relative to 6.5%)',
        y = expression(atop(
          "Log Odds Ratio of Completely Observed Eligibility Information",
-         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Above 35 kg/m'^2 *')'
+         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Relative to 35 kg/m'^2 *')'
        )),
        title = 'MAR Assumption Sensitivity Analysis: Difference in 3-Year Weight Loss',
        subtitle = 'Diabetes via Rx: Active w/in 12 Months Before Surgery',
@@ -167,10 +167,10 @@ ggplot(t2dm_plot %>% filter(rx_lookback == 0), aes(x = alpha_a1c, y = alpha_bmi)
   theme(legend.text = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 18),
         strip.text = element_text(size = 10)) +
-  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c',
+  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c (Relative to 6.5%)',
        y = expression(atop(
          "Log Odds Ratio of Completely Observed Eligibility Information",
-         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Above 35 kg/m'^2 *')'
+         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Relative to 35 kg/m'^2 *')'
        )),
        title = 'MAR Assumption Sensitivity Analysis: Difference in 3-Year Diabetes Remission Rate',
        subtitle = 'Diabetes via Rx: Active at Surgery',
@@ -187,10 +187,10 @@ ggplot(t2dm_plot %>% filter(rx_lookback == 12), aes(x = alpha_a1c, y = alpha_bmi
   theme(legend.text = element_text(angle = 90, hjust = 1),
         axis.title = element_text(size = 18),
         strip.text = element_text(size = 10)) +
-  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c',
+  labs(x = 'Log Odds Ratio of Completely Observed Eligibility Information\nPer 1.0% Change in Baseline A1c (Relative to 6.5%)',
        y = expression(atop(
          "Log Odds Ratio of Completely Observed Eligibility Information",
-         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Above 35 kg/m'^2 *')'
+         "Per 1 " * "kg/m"^2 * " Change in Baseline BMI kg/m"^2  * ' (Relative to  35 kg/m'^2 *')'
        )),
        title = 'MAR Assumption Sensitivity Analysis: Difference in 3-Year Diabetes Remission Rate',
        subtitle = 'Diabetes via Rx: Active w/in 12 Months Before Surgery',
