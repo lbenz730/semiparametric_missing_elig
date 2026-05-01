@@ -1,19 +1,80 @@
-### Illustration of EIF estimator for OMOP derived data synthetic data example
+---
+title: "Illustration of EIF Estimator"
+author: "Luke Benz"
+date: "`r Sys.Date()`"
+output: pdf_document
+header-includes:
+  - \usepackage{bm}
+  - \usepackage{amsmath}
+  - \usepackage{amssymb}
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T, warning = F, message = F)
+```
+
+
+# Introduction
+Given that the underlying EHR data can not be shared, the example presented in the main text can not be reproduced locally. For a detailed reproducible example, we have created a working example based on OMOP-CDM formatted data. In this file, we walk through implementation of the estimator as well as some diagnostic checks, figures, and commentary.
+
+
+```{r}
+### Load Packages and Helper Functions
 library(tidyverse)
 library(SuperLearner)
-library(ranger)
-library(polspline)
-source('scripts/helpers.R')
+library(here)
+library(ggridges)
+source(here('scripts/helpers.R'))
+```
+
+We begin by loading in the synthetic data example created in `build_omop_example.R` using the `{omock}` package. The data contain information on 10,677 surgical patients undergoing Roux-en-Y gastric bypass ($A = 1$) or sleeve gastrectomy $A = 0$.
+
+
+* $A$ = surgical procedure
+* $Y$ = % change in BMI from baseline after 3 years
+* $\bm L^*$: race (1 = Caucasian, 0 = Non-Caucasian), sex (1 = Female, 0 = Male), Age
+* $\bm L^e_m$: Baseline A1c and Baseline BMI
+* $E$: Eligibility indicator for BMI $\geq 35$ kg/m$^2$ and A1c $\geq 6.5\%$
+* $R$: Indicator for eligibility ascertainment.
+
+When creating this synthetic dataset, we created outcomes for all patients and masked study eligibility for some patients. In practice, patients may be missing outcomes as well, in which case imputation or switching to $\widehat\theta_\text{IF}$ are both options. For this example, rather than demonstrate $\widehat\theta_\text{EIF}$ over a range of lookback windows, we simply take the baseline values to be the most recent measures within the year prior to surgery. Implementation of $\widehat\theta_\text{EIF}$ would be identical after changing the operationalization of study eligibility. Finally, we note that these data are generated such that the true value $\theta_\text{ATT}^\text{elig} = -0.06$
+
+
+```{r}
+### Load in Data
+df_analysis <- 
+  read_csv(here('scripts/worked_omop_example/analysis_dataset.csv')) %>% 
+  rename('A' = bs_type)
+
+
+### Summary S
+df_analysis %>% 
+  group_by(eligible, R) %>% 
+  count() %>% 
+  ungroup() %>% 
+  mutate('pct' = n/sum(n))
+```
+
+We see that about 44\% of patients have insufficient information to determine study eligibility.
+
+# Implementing $\widehat\theta_\text{EIF}$
+
+First, we present a function for computing $\theta_\text{EIF}$ below, which takes the following arguments
+
+* `df`: data frame containing treatment variable (must be called A), eligibility (must be called eligible), ascertainment (must be called R), covariates, and outcome
+* `models`: list of specifications for each nuisance model
+* `n_splits` = # of splits to be used in sample splitting
+
+```{r}
 
 ### eif_estimator: function to compute EIF estimator
-### Argumements
+### Arguments
 ###   df: data frame containing treatment variable (must be called A), 
 ###       eligibility (must be called eligible), ascertainment (must be called R), covariates, and outcome
 ###   models: list of specifications for each nuisance model. 
 ###   n_splits = # of splits to be used in sample splitting.
 ###
-### Output: Data frame with treatment effect and standard error
+### Output: List w/ Data frame with treatment effect and standard error and individual IF contributions/nuisnaces
 
 eif_estimator <- function(df, models, n_splits) {
   ### Unpack nuisance model instructions
@@ -505,13 +566,24 @@ eif_estimator <- function(df, models, n_splits) {
     summarise('att_hat' = mean(beta_OS)/mean(alpha_OS),
               'sd' = sd(subject_IF)/sqrt(nrow(df)))
   
-  return(tau_hat)
+  return(list('tau_hat' = tau_hat,
+              'df_EIF' = df_final))
 }
+```
 
 
+Next, we specify modeling instructions for each nuisance function. Each specification should contain the following structure
+
+* `type` = model type. We strongly recommend super_learner. For select nuisance models parametric options also exist
+* `Y` = modeling target
+* `X` = covariates used in model
+* `formula` = model specification formula object
+* `sl_libs` = libraries to supply to super learner (in addition to combinations of SL.ranger)
+
+```{r}
 ### Model Instructions for each nuisance function
 ### Each specification should contain the following structure
-###       type = model_type. We strongly recommend super_learner. For select nusiance models parametric options also exist
+###       type = model_type. We strongly recommend super_learner. For select nuisance models parametric options also exist
 ###       Y = modeling target
 ###       X = covariates used in model
 ###       formula = model specification formula object
@@ -574,20 +646,116 @@ model_list <-
                  'formula' = ~race_source_value + gender_source_value + baseline_age + pct_weight_change,
                  'sl_libs' = c('SL.polymars', 'SL.lm'))
   )
+```
 
-### Run Analysis
+Next, we fun the analysis
+```{r}
 set.seed(3810)
-df_analysis <- 
-  read_csv('scripts/worked_omop_example/analysis_dataset.csv') %>% 
-  rename('A' = bs_type)
-
-df_results <- 
+results <- 
   eif_estimator(df = df_analysis,
                 models = model_list,
                 n_splits = 2)
 
-df_results
-# # A tibble: 1 × 2
-# att_hat      sd
-# <dbl>   <dbl>
-#   1 -0.0591 0.00494
+results$tau_hat
+```
+
+We see that $\widehat\theta_\text{EIF} =$ `r results$tau_hat$att_hat`, recovering the true value of -0.06. 
+
+
+# Diagnostics and Visualizations
+To validate the stability of $\widehat\theta_\text{EIF}$, we produce some plots and additional checks, following Appendix S7.
+
+
+```{r}
+
+### Elig-Related Nuisances
+nuisance_elig <- 
+  results$df_EIF %>% 
+  pivot_longer(cols = c('eta1_hat', 'eta0_hat', 'epsilon1_hat'),
+               names_to = 'nuisance_fx',
+               values_to = 'value_hat') 
+
+
+ggplot(nuisance_elig, aes(x = value_hat, y = nuisance_fx)) + 
+  geom_density_ridges(aes(fill = nuisance_fx), 
+                      rel_min_height = 0.01, 
+                      scale = 1,
+                      alpha = 0.3) +
+  scale_fill_discrete(labels = c(expression(widehat(epsilon)[1]), expression(widehat(eta)[0]), expression(widehat(eta)[1]))) +
+  scale_x_continuous(limits = c(0,1)) +
+  scale_y_discrete(labels = c(expression(widehat(epsilon)[1]), expression(widehat(eta)[0]), expression(widehat(eta)[1]))) +
+  labs(x = 'Estimated Nuisance Function Value',
+       y = 'Density)',
+       fill = '') + 
+  theme(axis.text = element_text(size = 16),
+        strip.text = element_text(size = 14),
+        legend.text = element_text(size = 16))
+
+```
+
+
+We notice that $\widehat\eta_0$ and $\widehat\eta_1$ are bounded away from 0 and have a high degree of overlap suggesting differential missingness is not an issue. Additionally, adjusted eligibility rate (given completely observed information), $$\mathbb{P}_n[\widehat \varepsilon(\bm L^*, Y)] = $$ `r round(mean(results$df_EIF$epsilon1_hat), 3)`. This is nearly identical to the observed rate $\frac{1822}{1822 + 4195} = 0.303$, another good calibration sanity check.
+
+```{r}
+### Effective Sample Size Computation
+results$df_EIF %>% 
+  filter(R == 1, eligible == 1) %>% 
+  summarise('n' = n(),
+            'ess' = sum(1/eta1_hat)^2/sum(1/eta1_hat^2))
+```
+
+Next we see that the Kish-like effective sample size contribution is nearly identical to the true number of ascertainably eligible patients, further confirming hat $\eta$ is well calibrated.
+
+Now, we turn our attention to the distribution of complete case propensity scores $\widehat u$. Note that these only contribute in eligible complete cases undergoing RYGB ($A = 0$). 
+
+```{r}
+### Distribution of u_hat
+results$df_EIF %>% 
+  filter(A == 0, R == 1, eligible == 1) %>% 
+  summarise('min' = min(u_hat),
+            'q01' = quantile(u_hat, 0.01),
+            'q25' = quantile(u_hat, 0.25),
+            'mean' = mean(u_hat),
+            'median' = median(u_hat),
+            'q75' = quantile(u_hat, 0.75),
+            'q99' = quantile(u_hat, 0.99),
+            'max' = max(u_hat))
+
+```
+
+All values of $\widehat{u}$ range are clearly bounded away from 0 and 1, so we aren't worried about having to truncate extreme weights.
+
+Finally, we come to the distribution of nested nuisances $(\widehat \xi, \widehat \gamma, \widehat \chi)$.
+
+```{r}
+nuisance_nest  <- 
+  results$df_EIF %>% 
+  pivot_longer(cols = c('xi_hat', 'gamma_hat', 'chi_hat'),
+               names_to = 'nuisance_fx',
+               values_to = 'value_hat') 
+
+ggplot(nuisance_nest, aes(x = value_hat, y = nuisance_fx)) + 
+  geom_vline(xintercept = 0, lty = 2, alpha = 0.5, lwd = 1.2) + 
+  stat_binline(aes(fill = nuisance_fx), 
+               draw_baseline = F,
+               bins = 50,
+               alpha = 0.3) +
+  scale_y_discrete(labels = c(expression(widehat(chi)), expression(widehat(gamma)), expression(widehat(xi)))) +
+  scale_fill_discrete(labels = c(expression(widehat(chi)), expression(widehat(gamma)), expression(widehat(xi)))) +
+  labs(x = 'Estimated Nuisance Function Value',
+       y = 'Density',
+       fill = '') + 
+  theme(axis.text = element_text(size = 12),
+        strip.text = element_text(size = 14),
+        legend.text = element_text(size = 16))
+
+```
+
+There's not a huge degree of concentration at 0 or skew to any of these distributions, further confirming the behavior of underlying nuisances $u$ and $\mu_0$. Altogether, there's nothing overly suggestive of instability. We report the final value of $\widehat\theta_\text{EIF}$ as above
+
+```{r}
+results$tau_hat
+```
+
+
+

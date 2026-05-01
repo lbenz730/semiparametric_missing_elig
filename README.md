@@ -68,6 +68,7 @@ The scripts below implement each estimator for both outcomes in the data applica
 |---|---|---|
 | [`worked_omop_example/build_omop_example.R`](worked_omop_example/build_omop_example.R) | Creates synthetic EHR dataset via `omock` and prepares it for analysis | [`worked_omop_example/analysis_dataset.csv`](worked_omop_example/analysis_dataset.csv) |
 | [`worked_omop_example/EIF_omop_example.R`](worked_omop_example/EIF_omop_example.R) | Applies `eif_estimator` to the prepared synthetic dataset | Console output / user-defined |
+| [`worked_omop_example/EIF_omop_example.Rmdd`](worked_omop_example/EIF_omop_example.Rmd) | Applies `eif_estimator` to the prepared synthetic dataset and walks through diagnostic checks with additional commentary and figures |  [`worked_omop_example/EIF_omop_examplet.pdf`](worked_omop_example/EIF_omop_example.pdf) |
 
 ---
 
@@ -106,11 +107,11 @@ __Figures__
 * __MAR_sensitivity_analysis.R__: Conducts sensitivity analysis for Assumption 4 (Eligibility MAR) and generates Figures S5-S8.
 
 ## Worked OMOP Example (`worked_omop_example`)
-Given that the underlying EHR data can not be shared, the example presented in the main text can not be reproduced locally. For a detailed reproducible example, we have created a working example based on OMOP-CDM formated data. In particular, we use the `omock` package to create a synthetic dataset based on OMOP standards which can be shared. We then demonstrate how to turn this data into an analytical dataset to be analyzed by $\widehat\theta_\text{EIF}$, and analyze the sythetic dataset.
+Given that the underlying EHR data can not be shared, the example presented in the main text can not be reproduced locally. For a detailed reproducible example, we have created a working example based on OMOP-CDM formatted data. In particular, we use the `omock` package to create a synthetic dataset based on OMOP standards which can be shared. We then demonstrate how to turn this data into an analytical dataset to be analyzed by $\widehat\theta_\text{EIF}$, and analyze the synthetic dataset.
 
 * __build_omop_example.R__: This script creates a synthetic EHR dataset using the `omock` package. It then illustrates how to clean this example dataset and prepare the dataset for analysis by our EIF-based estimator, $\widehat\theta_\text{EIF}$. The final output of this script is the dataset `scripts/worked_omop_example/analysis_dataset.csv`.
 * __EIF_omop_example.R__: This script contains a documented function `eif_estimator` which implements $\widehat\theta_\text{EIF}$. The script loads in the prepared dataset `scripts/worked_omop_example/analysis_dataset.csv` and applies `eif_estimator` to that worked data example. 
-
+* __EIF_omop_example.Rmd__:  Literate programing document contains a documented function `eif_estimator` which implements $\widehat\theta_\text{EIF}$. Contains additional figures and commentary on diagnostic checks for estimator stability.
 ### Simulations (`simulations/aligned_t0`)
 Folder of scripts for a setting where time zero ($t_0$) is aligned for all subjects so we only need to consider eligibility, missingness, etc. at a single time per subject, and matching is not needed (insofar as it is a mechanism for establishing time zero). Contains an implementation of $\widehat\theta_\text{EIF}, \widehat\theta_\text{IF}$ and $\widetilde\theta_\text{IF}$, $\widehat\theta_\text{CC}$ and $\widehat\theta_\text{IWOR}$
 
