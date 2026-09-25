@@ -17,9 +17,11 @@ df_summary <-
   summarise('pct_bias' = 100 *mean((tau_hat - true_att)/true_att),
             'bias' = mean(tau_hat - true_att),
             'std_dev' = sd(tau_hat),
+            'mean_sd' = mean(sd),
             'coverage' = 100 * mean(true_att >= lower & true_att <= upper)) %>% 
   ungroup() %>% 
-  mutate('std_dev' = scales::scientific(std_dev)) %>% 
+  mutate('std_dev' = scales::scientific(std_dev),
+         'mean_sd' = scales::scientific(mean_sd)) %>% 
   mutate('estimator' = case_when(estimator == 'cc_outcome' ~ '$\\widehat\\theta_\\text{CC}$',
                                  estimator == 'iwor_cc' ~ '$\\widehat\\theta_\\text{IWOR}$',
                                  estimator == 'crossfit_iwor_cc' ~ '$\\widehat\\theta_\\text{IWOR}$',
@@ -53,7 +55,7 @@ df1 <-
   df_summary %>% 
   filter(sim_id == 1 | sim_id == 8) %>% 
   pivot_wider(names_from = c('sim_id'),
-              values_from = c('pct_bias', 'std_dev', 'coverage'),
+              values_from = c('pct_bias', 'std_dev', 'mean_sd', 'coverage'),
               id_cols = c('estimator', 'description', 'correct_models', contains('strategy'),'sl_libs'))  %>% 
   select(estimator, correct_models, nuisance_strategy, estimation_strategy, sl_libs, everything(),
          -description) %>% 
@@ -80,7 +82,7 @@ ltx_1 <-
       format = 'latex', 
       booktabs = T,
       escape = F,
-      digits = c(0, 0, 0, 0, 0, 1, 2, 1, 1, 2, 1),
+      digits = c(0, 0, 0, 0, 0, 1, 2, 1, 1, 1, 2, 1, 1),
       col.names = c('Estimator',
                     'Strategy',
                     'SL Libs$\\textsuperscript{a}$',
@@ -88,9 +90,11 @@ ltx_1 <-
                     'True $\\mu/\\eta$\\textsuperscript{c}',
                     '\\%-Bias',
                     'SD',
+                    'Mean $\\widehat{\\text{Var}}[\\widehat\\theta]$',
                     'Coverage',
                     '\\%-Bias',
                     'SD',
+                    'Mean $\\widehat{\\text{Var}}[\\widehat\\theta]$',
                     'Coverage'), 
       caption = 'Comparison of estimators of $\\theta(P)$ in simulation study', label = 'sim_results') %>% 
   add_footnote(list('SL Libs = $\\texttt{SuperLearner}$ libraries: S1 = {Random Forest, LM/GLM, GAM, Polymars}; SL2 = {Random Forest, GAM, Polymars}',
@@ -100,12 +104,12 @@ ltx_1 <-
   collapse_rows(columns = c(1:5), 
                 valign = 'middle') %>% 
   add_header_above(c(' ' = 5,
-                     '$n = 10,000$ Patients' = 3, 
-                     '$n = 25,000$ Patients' = 3), bold = T, escape = F) %>% 
+                     '$n = 10,000$ Patients' = 4, 
+                     '$n = 25,000$ Patients' = 4), bold = T, escape = F) %>% 
   row_spec(0, bold = T) %>% 
   kable_styling() %>% 
-  gsub('\\{c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\}',
-       '\\{|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|}', .) %>% 
+  gsub('\\{c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\|c\\}',
+       '\\{|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|Sc\\|}', .) %>% 
   gsub('\\\\begin\\{table\\}', '\\\\begin\\{table\\}\\\\tiny', .) %>% 
   gsub('ZzZ\\$\\\\widehat\\\\theta_\\\\text\\{[A-Za-z]{1,4}\\}\\$ZzZ', '', .) %>% 
   gsub('ZzZ\\$\\\\widehat\\\\theta_\\\\text\\{[A-Za-z]{1,4}\\}\\$(Parametric|Nonparametric)ZzZ', '', .) %>% 
