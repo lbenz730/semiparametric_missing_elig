@@ -44,8 +44,8 @@ The table below maps each figure and table in the manuscript to the script(s) th
 
 | Artifact | Script | Location |
 |---|---|---|
-| Table S1 — Simulation results summary | [`simulations/aligned_t0/latex_tables.R`](simulations/aligned_t0/latex_tables.R) | [`tables/sim_results_main.tex`](tables/sim_results_main.tex) |
-| Table S2 — Simulation parameter values | [`simulations/aligned_t0/inform_sims.R`](simulations/aligned_t0/inform_sims.R), [`simulations/aligned_t0/latex_tables.R`](simulations/aligned_t0/latex_tables.R) | [`tables/sim_coeff.tex`](tables/sim_coeff.tex) |
+| Table S1 — Simulation results summary | [`scripts/simulations/aligned_t0/latex_tables.R`](/scripts/simulations/aligned_t0/latex_tables.R) | [`tables/sim_results_main.tex`](tables/sim_results_main.tex) |
+| Table S2 — Simulation parameter values | [`scripts/simulations/aligned_t0/inform_sims.R`](/scripts/simulations/aligned_t0/inform_sims.R), [`scripts/simulations/aligned_t0/latex_tables.R`](/scripts/simulations/aligned_t0/latex_tables.R) | [`tables/sim_coeff.tex`](tables/sim_coeff.tex) |
 
 ---
 
@@ -55,10 +55,10 @@ The scripts below implement each estimator for both outcomes in the data applica
 
 | Estimator | Weight Change Script | T2DM Remission Script |
 |---|---|---|
-| Naive CC ($\hat\theta_\text{CC}$) | [`analysis/aligned_t0/fit_CC_outcome_regression_estimator.R`](analysis/aligned_t0/fit_CC_outcome_regression_estimator.R) | [`analysis/aligned_t0/fit_CC_outcome_remission.R`](analysis/aligned_t0/fit_CC_outcome_remission.R) |
-| IWOR ($\hat\theta_\text{IWOR}$) | [`analysis/aligned_t0/fit_iwor_estimator.R`](analysis/aligned_t0/fit_iwor_estimator.R) | [`analysis/aligned_t0/fit_iwor_estimator_remission.R`](analysis/aligned_t0/fit_iwor_estimator_remission.R) |
-| IF ($\hat\theta_\text{IF}$) | [`analysis/aligned_t0/fit_IF_estimator.R`](analysis/aligned_t0/fit_IF_estimator.R) | [`analysis/aligned_t0/fit_IF_estimator_remission.R`](analysis/aligned_t0/fit_IF_estimator_remission.R) |
-| EIF ($\hat\theta_\text{EIF}$) | [`analysis/aligned_t0/fit_EIF_estimator.R`](analysis/aligned_t0/fit_EIF_estimator.R) | [`analysis/aligned_t0/fit_EIF_estimator_remission.R`](analysis/aligned_t0/fit_EIF_estimator_remission.R) |
+| Naive CC ($\hat\theta_\text{CC}$) | [`scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator.R`](/scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator.R) | [`analysis/aligned_t0/fit_CC_outcome_remission.R`](/scripts/analysis/aligned_t0/fit_CC_outcome_remission.R) |
+| IWOR ($\hat\theta_\text{IWOR}$) | [`scripts/analysis/aligned_t0/fit_iwor_estimator.R`](/scripts/analysis/aligned_t0/fit_iwor_estimator.R) | [`scripts/analysis/aligned_t0/fit_iwor_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_iwor_estimator_remission.R) |
+| IF ($\hat\theta_\text{IF}$) | [`scripts/analysis/aligned_t0/fit_IF_estimator.R`](/scripts/analysis/aligned_t0/fit_IF_estimator.R) | [`scripts/analysis/aligned_t0/fit_IF_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_IF_estimator_remission.R) |
+| EIF ($\hat\theta_\text{EIF}$) | [`scripts/analysis/aligned_t0/fit_EIF_estimator.R`](/scripts/analysis/aligned_t0/fit_EIF_estimator.R) | [`scripts/analysis/aligned_t0/fit_EIF_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_EIF_estimator_remission.R) |
 
 ---
 
