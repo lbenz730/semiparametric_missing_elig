@@ -90,11 +90,11 @@ ltx_1 <-
                     'True $\\mu/\\eta$\\textsuperscript{c}',
                     '\\%-Bias',
                     'SD',
-                    'Mean $\\widehat{\\text{Var}}[\\widehat\\theta]$',
+                    'Mean $\\widehat{\\text{SE}}[\\widehat\\theta]$',
                     'Coverage',
                     '\\%-Bias',
                     'SD',
-                    'Mean $\\widehat{\\text{Var}}[\\widehat\\theta]$',
+                    'Mean $\\widehat{\\text{SE}}[\\widehat\\theta]$',
                     'Coverage'), 
       caption = 'Comparison of estimators of $\\theta(P)$ in simulation study', label = 'sim_results') %>% 
   add_footnote(list('SL Libs = $\\texttt{SuperLearner}$ libraries: S1 = {Random Forest, LM/GLM, GAM, Polymars}; SL2 = {Random Forest, GAM, Polymars}',
