@@ -120,6 +120,9 @@ scr_imputed <-
          rate = shape/exp(predict(scr_model, newdata = filter(df_covariates, is.na(scr)))))
 ix_na <- is.na(df_covariates$scr)
 df_covariates$scr[ix_na] <- scr_imputed
+df_covariates$impute_eGFR <- NA
+df_covariates$impute_eGFR[ix_na] <- 1
+df_covariates$impute_eGFR[!ix_na] <- 0
 df_covariates$eGFR[ix_na] <-
   ckd_epi(scr = df_covariates$scr[ix_na],
           age = df_covariates$baseline_age[ix_na],
@@ -179,15 +182,13 @@ df_remission <-
   group_by(subject_id) %>% 
   summarise('remission' = as.numeric(any(remission)))
 
-### Function to build our cohort for each particular operationalization of eligibility criteria
+### Function to build our cohort
 ###
 ### elig_start = date of eligibility ascertainment window beginning
 ### elig_end = date of eligibility ascertainment window end
 ### bmi_lookback = time to look back to gather baseline bmi values
 ### diabetes_lookback = time to look back to gather info on diabetes labs
 ### rx_lookback = time to look back to gather info on rx (0 = active, as in Fisher 2018 and O'Brien 2018 papers)
-###
-### Returns dataset of cohort 
 build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, rx_lookback) {
   ### Surgical Cases Between Elig, Period, Enrolled Continuously for a year prior to surgery
   df_cohort <- 
@@ -196,6 +197,7 @@ build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, 
            index_date <= elig_end) %>% 
     left_join(df_enrollment, by = 'subject_id') %>% 
     filter(index_date >= enr_1yr, index_date <= enr_end) 
+  
   
   
   ### Baseline BMI 
@@ -289,13 +291,16 @@ build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, 
            bs_type, ### A
            pct_wt_change, bmi_3yr, remission, ### Y
            baseline_bmi, diabetes, baseline_a1c, insulin, DiaRem, ### Le (and related)
-           site, gender, baseline_age, smoking_status, eGFR, race, hypertension, dyslipidemia, calendar_year ### Lc
+           site, gender, baseline_age, smoking_status, eGFR, race, hypertension, dyslipidemia, calendar_year, impute_eGFR ### Lc
     )
   
   
   ### Two Stage Imputation for % Wt Change Outcome
   ### 1) Impute from model using baseline bmi as predictor if available
   ### 2) Otherwise Impute from model not using baseline_bmi as predictor
+  df_final$Y_impute_wt <- 0
+  df_final$a1c_impute <- 0
+    
   Y_model <- 
     lm(pct_wt_change ~ 
          bs_type + baseline_bmi + site + gender + baseline_age + site + gender +
@@ -309,6 +314,8 @@ build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, 
           mean = predict(Y_model, newdata = df_final[ix,]),
           sd = sqrt(sum(resid(Y_model)^2 / Y_model$df.residual)))
   
+  df_final$Y_impute_wt[ix] <- 1
+  
   Y_model_noBMI <- 
     lm(pct_wt_change ~ 
          bs_type + site + gender + baseline_age + site + gender +
@@ -321,6 +328,8 @@ build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, 
     rnorm(n = sum(ix), 
           mean = predict(Y_model_noBMI, newdata = df_final[ix,]),
           sd = sqrt(sum(resid(Y_model_noBMI)^2 / Y_model_noBMI$df.residual)))
+  
+  df_final$Y_impute_wt[ix] <- 1
   
   
   ### Impute baseline A1c Among those w/ R = 1, E = 1, and No A1c
@@ -338,6 +347,8 @@ build_cohort <- function(elig_start, elig_end, bmi_lookback, diabetes_lookback, 
     pmin(11, 2 + rgamma(n = sum(ix),
                         shape = shape,
                         rate = shape/exp(predict(a1c_model, newdata = df_final[ix,]))))
+  
+  df_final$a1c_impute[ix] <- 1
   
   return(df_final)
 }

@@ -19,7 +19,7 @@ The table below maps each figure and table in the manuscript to the script(s) th
 |---|---|---|
 | Figure 1 — Frequency of measurements for select surgical patients | [`scripts/analysis/aligned_t0/diabetes_figure.R`](scripts/analysis/aligned_t0/diabetes_figure.R) | [`figures/diabetes_elig.pdf`](figures/diabetes_elig.pdf) |
 | Figure 2 — Eligibility distributions | [`scripts/analysis/aligned_t0/elig_figures.R`](scripts/analysis/aligned_t0/elig_figures.R) | [`figures/elig_dist.pdf`](figures/elig_dist.pdf) |
-| Figure 3 — Distribution of time between surgery and most recent BMI/A1c measure | [`scripts/analysis/aligned_t0/measure_times_figure.R`](scripts/analysis/aligned_t0/measure_times_figure.R) | [`figures/measure_times.pdf`](figures/measure_times.pdf) |
+| Figure 3 — Distribution of time between surgery and most recent BMI/A1c measure | [`scripts/analysis/aligned_t0/measure_time_figure.R`](scripts/analysis/aligned_t0/measure_time_figure.R) | [`figures/measure_times.pdf`](figures/measure_times.pdf) |
 | Figure 4 — Distributions of nuisance functions | [`scripts/analysis/aligned_t0/plot_nuisances.R`](scripts/analysis/aligned_t0/plot_nuisances.R) | [`figures/nuisance_dist.pdf`](figures/nuisance_dist.pdf) |
 | Figure 5 — Point estimates and 95% confidence intervals | [`scripts/analysis/aligned_t0/plot_results.R`](scripts/analysis/aligned_t0/plot_results.R) | [`figures/results_figure.pdf`](figures/results_figure.pdf) |
 
@@ -46,6 +46,11 @@ The table below maps each figure and table in the manuscript to the script(s) th
 |---|---|---|
 | Table S1 — Simulation results summary | [`scripts/simulations/aligned_t0/latex_tables.R`](/scripts/simulations/aligned_t0/latex_tables.R) | [`tables/sim_results_main.tex`](tables/sim_results_main.tex) |
 | Table S2 — Simulation parameter values | [`scripts/simulations/aligned_t0/inform_sims.R`](/scripts/simulations/aligned_t0/inform_sims.R), [`scripts/simulations/aligned_t0/latex_tables.R`](/scripts/simulations/aligned_t0/latex_tables.R) | [`tables/sim_coeff.tex`](tables/sim_coeff.tex) |
+| Table S3 — Imputation counts by lookback scenario | [`scripts/analysis/aligned_t0/imputation_summary.R`](scripts/analysis/aligned_t0/imputation_summary.R) | [`tables/imputation_table.tex`](tables/imputation_table.tex) |
+| Table S4 — Weight change results: ATT, 95% CIs, and E-values across all 40 scenarios | [`scripts/analysis/aligned_t0/plot_result_table.R`](scripts/analysis/aligned_t0/plot_result_table.R) | [`tables/weight_results.tex`](tables/weight_results.tex) |
+| Table S5 — T2DM remission results: ATT and 95% CIs across all 40 scenarios | [`scripts/analysis/aligned_t0/plot_result_table.R`](scripts/analysis/aligned_t0/plot_result_table.R) | [`tables/t2dm_results.tex`](tables/t2dm_results.tex) |
+| Table S6 — Cohort characteristics by bariatric procedure type | [`scripts/analysis/aligned_t0/cohort_summary_table.R`](scripts/analysis/aligned_t0/cohort_summary_table.R) | [`tables/cohort_summary_table.html`](tables/cohort_summary_table.html) |
+| Matched-cohort design sensitivity tables (response-letter notes) | [`scripts/simulations/aligned_t0/latex_tables.R`](scripts/simulations/aligned_t0/latex_tables.R) | [`tables/sim_results_matching.tex`](tables/sim_results_matching.tex) |
 
 ---
 
@@ -55,7 +60,7 @@ The scripts below implement each estimator for both outcomes in the data applica
 
 | Estimator | Weight Change Script | T2DM Remission Script |
 |---|---|---|
-| Naive CC ($\hat\theta_\text{CC}$) | [`scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator.R`](/scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator.R) | [`analysis/aligned_t0/fit_CC_outcome_remission.R`](/scripts/analysis/aligned_t0/fit_CC_outcome_remission.R) |
+| Naive CC ($\hat\theta_\text{CC}$) | [`scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator.R`](/scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator.R) | [`scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_CC_outcome_regression_estimator_remission.R) |
 | IWOR ($\hat\theta_\text{IWOR}$) | [`scripts/analysis/aligned_t0/fit_iwor_estimator.R`](/scripts/analysis/aligned_t0/fit_iwor_estimator.R) | [`scripts/analysis/aligned_t0/fit_iwor_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_iwor_estimator_remission.R) |
 | IF ($\hat\theta_\text{IF}$) | [`scripts/analysis/aligned_t0/fit_IF_estimator.R`](/scripts/analysis/aligned_t0/fit_IF_estimator.R) | [`scripts/analysis/aligned_t0/fit_IF_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_IF_estimator_remission.R) |
 | EIF ($\hat\theta_\text{EIF}$) | [`scripts/analysis/aligned_t0/fit_EIF_estimator.R`](/scripts/analysis/aligned_t0/fit_EIF_estimator.R) | [`scripts/analysis/aligned_t0/fit_EIF_estimator_remission.R`](/scripts/analysis/aligned_t0/fit_EIF_estimator_remission.R) |
@@ -66,9 +71,9 @@ The scripts below implement each estimator for both outcomes in the data applica
 
 | Script | Description | Output |
 |---|---|---|
-| [`worked_omop_example/build_omop_example.R`](worked_omop_example/build_omop_example.R) | Creates synthetic EHR dataset via `omock` and prepares it for analysis | [`worked_omop_example/analysis_dataset.csv`](worked_omop_example/analysis_dataset.csv) |
-| [`worked_omop_example/EIF_omop_example.R`](worked_omop_example/EIF_omop_example.R) | Applies `eif_estimator` to the prepared synthetic dataset | Console output / user-defined |
-| [`worked_omop_example/EIF_omop_example.Rmdd`](worked_omop_example/EIF_omop_example.Rmd) | Applies `eif_estimator` to the prepared synthetic dataset and walks through diagnostic checks with additional commentary and figures |  [`worked_omop_example/EIF_omop_examplet.pdf`](worked_omop_example/EIF_omop_example.pdf) |
+| [`scripts/worked_omop_example/build_omop_example.R`](scripts/worked_omop_example/build_omop_example.R) | Creates synthetic EHR dataset via `omock` and prepares it for analysis | [`scripts/worked_omop_example/analysis_dataset.csv`](scripts/worked_omop_example/analysis_dataset.csv) |
+| [`scripts/worked_omop_example/EIF_omop_example.R`](scripts/worked_omop_example/EIF_omop_example.R) | Applies `eif_estimator` to the prepared synthetic dataset | Console output / user-defined |
+| [`scripts/worked_omop_example/EIF_omop_example.Rmd`](scripts/worked_omop_example/EIF_omop_example.Rmd) | Applies `eif_estimator` to the prepared synthetic dataset and walks through diagnostic checks with additional commentary and figures |  [`scripts/worked_omop_example/EIF_omop_example.pdf`](scripts/worked_omop_example/EIF_omop_example.pdf) |
 
 ---
 
@@ -92,8 +97,8 @@ __Weight Change Analysis__
 
 __T2DM Remission Analysis__
 
-* __fit_CC_outcome_remission__: Naive ATT analysis ( $\hat\theta_\text{CC}$) for diabetes remission outcome 
-* __fit_iwor_estimato_remission.R__: IWOR ATT analysis (with $\hat\theta_\text{IWOR}$) for diabetes remission outcome  
+* __fit_CC_outcome_regression_estimator_remission.R__: Naive ATT analysis ( $\hat\theta_\text{CC}$) for diabetes remission outcome 
+* __fit_iwor_estimator_remission.R__: IWOR ATT analysis (with $\hat\theta_\text{IWOR}$) for diabetes remission outcome  
 * __fit_IF_estimator_remission.R__: IF ATT analysis (with $\hat\theta_\text{IF}$) for diabetes remission outcome
 * __fit_EIF_estimator_remission.R__: EIF ATT analysis (with $\hat\theta_\text{EIF}$) for diabetes remission outcome
 
@@ -101,10 +106,15 @@ __T2DM Remission Analysis__
 __Figures__
 * __diabetes_figure.R__: Plot of diabetes figure showing frequency of certain measurements for select surgical patients __(Generates Figure 1)__
 * __elig_figures.R__: Plot eligibility distributions __(Generates Figure 2 and S2)__
-* __measure_times_figure.R__: Plots distribution of time between date of surgery and most recent measure of BMI/A1c __(Generates Figure 3)__
+* __measure_time_figure.R__: Plots distribution of time between date of surgery and most recent measure of BMI/A1c __(Generates Figure 3)__
 * __plot_nuisances.R__: Plotting code for distributions of nuisance functions __(Generates Figures 4, S3, and S4)__
 * __plot_results.R__: Plot point estimates and 95% confidence intervals __(Generates Figure 4)__
 * __MAR_sensitivity_analysis.R__: Conducts sensitivity analysis for Assumption 4 (Eligibility MAR) and generates Figures S5-S8.
+
+__Tables__
+* __cohort_summary_table.R__: Builds the baseline cohort characteristics table (demographics, comorbidities, and clinical measures by bariatric procedure type) __(Generates Table S6)__
+* __imputation_summary.R__: Summarizes rates of imputation for weight change, HbA1c, and eGFR across the 40 eligibility lookback scenarios __(Generates Table S3)__
+* __plot_result_table.R__: Compiles point estimates, 95% confidence intervals, and E-values for each estimator across all 40 scenarios, for both the weight change and T2DM remission outcomes __(Generates Tables S4 and S5)__
 
 ## Worked OMOP Example (`worked_omop_example`)
 Given that the underlying EHR data can not be shared, the example presented in the main text can not be reproduced locally. For a detailed reproducible example, we have created a working example based on OMOP-CDM formatted data. In particular, we use the `omock` package to create a synthetic dataset based on OMOP standards which can be shared. We then demonstrate how to turn this data into an analytical dataset to be analyzed by $\widehat\theta_\text{EIF}$, and analyze the synthetic dataset.
