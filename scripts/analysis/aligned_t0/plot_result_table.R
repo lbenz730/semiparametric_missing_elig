@@ -1,6 +1,8 @@
 library(tidyverse)
 library(arrow)
 library(glue)
+library(knitr)
+library(kableExtra)
 
 source('scripts/helpers.R')
 
@@ -63,7 +65,7 @@ df_table <-
          
          'rr_approx_ci' = exp(0.91 * ci_high/sigma_Y),
          'rr_approx_ci' = ifelse(rr_approx_ci < 1, 1/rr_approx_ci, rr_approx_ci),
-         'evalue_ci' = rr_approx + sqrt(rr_approx_ci * (rr_approx_ci - 1)))
+         'evalue_ci' = rr_approx_ci + sqrt(rr_approx_ci * (rr_approx_ci - 1)))
 
 df_table <- 
   df_table %>% 
