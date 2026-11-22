@@ -1,7 +1,7 @@
 # Robust Causal Inference for Point Exposures with Missing Eligibility Criteria
 
 
-Benz, L., Mukherjee, R., Wang, R., Arterburn, D., Fischer, H., Lee, C., Shortreed, S.M., Haneuse, S., and Levis, A.W. "Robust Causal Inference for EHR-based Studies of Point Exposures with Missingness in Eligibility Criteria" _Journal of the American Statistical Association_ ([Link]([https://arxiv.org/abs/2504.16230](https://www.tandfonline.com/doi/full/10.1080/01621459.2026.2760596))
+Benz, L., Mukherjee, R., Wang, R., Arterburn, D., Fischer, H., Lee, C., Shortreed, S.M., Haneuse, S., and Levis, A.W. "Robust Causal Inference for EHR-based Studies of Point Exposures with Missingness in Eligibility Criteria" _Journal of the American Statistical Association_ ([Link]([https://www.tandfonline.com/doi/full/10.1080/01621459.2026.2760596]))
 
 ---
 
